@@ -1,0 +1,20 @@
+###################
+# funnel          #
+###################
+variable lxfunl equal ${lx}*0.40
+variable lxfunr equal ${lx}*0.60
+variable lyfun  equal ${lx}*0.25+${ly2}
+variable lzfun  equal ${diam}*0.5
+
+#region fun1 prism 0.0 ${lxfunl} ${ly2} ${lyfun} -${lzfun} ${lzfun} -${lxfunl} 0.0 0.0 units box
+#region fun2 prism ${lxfunr} ${lx} ${ly2} ${lyfun} -${lzfun} ${lzfun} ${lxfunl} 0.0 0.0 units box
+#region fun3 block 0.0 ${lxfunl} ${lyfun} ${lx} -${diam} ${diam} units box
+#region fun4 block ${lxfunr} ${lx} ${lyfun} ${lx} -${lzfun} ${lzfun} units box
+
+#region funl union 2 fun1 fun3
+#fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region funl
+#region funr union 2 fun3 fun4
+#fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region funr
+
+region test block 0.0 ${ly2} 0.0 ${ly2} -${lzfun} ${lzfun} units box
+fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region test

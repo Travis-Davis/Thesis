@@ -1,0 +1,302 @@
+atom_style    peri
+atom_modify   map array
+dimension     2
+units         si
+
+###############################################
+# Size, contact parameters
+###############################################
+
+variable	diam equal 6000
+variable	rad equal ${diam}*0.5
+variable	rad equal 6000*0.5
+
+variable	kn equal 1e6
+variable	damp equal 0.0
+variable	coeffFric equal 0.3
+variable	kt equal 0.5*${kn}
+variable	kt equal 0.5*1000000
+variable	thickness equal 1.0 #in m
+variable	dens equal 900*${thickness} #area density, in kg/m^2
+variable	dens equal 900*1 
+variable	minmass equal PI*${rad}^2*${dens}
+variable	minmass equal PI*3000^2*${dens}
+variable	minmass equal PI*3000^2*900
+
+variable	omega equal 0.5*10^(-3)
+variable	lambda equal 8.0*10^5
+
+variable	airDensity equal 1.225
+variable	waterDensity equal 1017.0
+variable	windDragCoefficient equal 0.015
+variable	oceanDragCoefficient equal 0.0045
+variable  P equal 2.75e5
+variable  ecc equal 2
+variable  bulkmodulus  equal ${P}*2.5e8
+variable  bulkmodulus  equal 275000*2.5e8
+variable  shearmodulus equal ${bulkmodulus}/${ecc}^2
+variable  shearmodulus equal 68750000000000/${ecc}^2
+variable  shearmodulus equal 68750000000000/2^2
+
+###############################################
+# Geometry-related parameters
+###############################################
+
+variable	nx equal 100
+variable	ny equal 0.5*${nx}
+variable	ny equal 0.5*100
+variable	n_actual equal floor(${nx}*${ny})
+variable	n_actual equal floor(100*${ny})
+variable	n_actual equal floor(100*50)
+variable	lx equal ${nx}*${diam}
+variable	lx equal 100*${diam}
+variable	lx equal 100*6000
+variable	ly2 equal 0.5*${lx}
+variable	ly2 equal 0.5*600000
+
+###############################################
+# Create box
+###############################################
+
+boundary	f f p
+
+variable	x0 equal 0
+variable	x1 equal ${lx}
+variable	x1 equal 600000
+region		boxreg block ${x0} ${x1} ${x0} ${x1} -${rad} ${rad}
+region		boxreg block 0 ${x1} ${x0} ${x1} -${rad} ${rad}
+region		boxreg block 0 600000 ${x0} ${x1} -${rad} ${rad}
+region		boxreg block 0 600000 0 ${x1} -${rad} ${rad}
+region		boxreg block 0 600000 0 600000 -${rad} ${rad}
+region		boxreg block 0 600000 0 600000 -3000 ${rad}
+region		boxreg block 0 600000 0 600000 -3000 3000
+create_box	1 boxreg
+Created orthogonal box = (0 0 -3000) to (600000 600000 3000)
+  1 by 1 by 1 MPI processor grid
+
+lattice	sq ${diam} origin 0.5 0.5 0
+lattice	sq 6000 origin 0.5 0.5 0
+Lattice spacing in x,y,z = 6000 6000 6000
+region		tophalf block 0 ${lx} ${ly2} ${lx} -${rad} ${rad} units box
+region		tophalf block 0 600000 ${ly2} ${lx} -${rad} ${rad} units box
+region		tophalf block 0 600000 300000 ${lx} -${rad} ${rad} units box
+region		tophalf block 0 600000 300000 600000 -${rad} ${rad} units box
+region		tophalf block 0 600000 300000 600000 -3000 ${rad} units box
+region		tophalf block 0 600000 300000 600000 -3000 3000 units box
+
+create_atoms	1 region tophalf
+Created 5000 atoms
+  Time spent = 0.00182009 secs
+
+set		group all density ${dens}
+set		group all density 900
+  5000 settings made for density
+set		group all mass ${minmass}
+set		group all mass 25446900494.0773
+  5000 settings made for mass
+
+#compute rad all property/atom radius
+variable area atom PI*c_rad^2
+
+###############################################
+# Forcing equations
+###############################################
+variable	xc equal 0.5*${lx}
+variable	xc equal 0.5*600000
+variable	yc equal 0.5*${lx}-50000.0
+variable	yc equal 0.5*600000-50000.0
+variable	rx atom x-${xc}
+variable	rx atom x-300000
+variable	ry atom y-${yc}
+variable	ry atom y-250000
+variable	rmag atom sqrt(v_rx^2+v_ry^2)
+variable	rxn atom v_rx/v_rmag
+variable	ryn atom v_ry/v_rmag
+variable	kcrossrx atom -v_ryn
+variable	kcrossry atom v_rxn
+variable	omegaR atom ${omega}*v_rmag
+variable	omegaR atom 0.0005*v_rmag
+variable	lR atom ${lambda}/v_rmag
+variable	lR atom 800000/v_rmag
+variable	prefac atom (v_omegaR<v_lR)*v_omegaR+(v_lR<=v_omegaR)*v_lR
+variable	ugx atom v_prefac*v_kcrossrx
+variable	ugy atom v_prefac*v_kcrossry
+
+variable velocity atom sqrt(vx*vx+vy*vy)
+
+###############################################
+# Fixes and pair styles
+###############################################
+comm_style	tiled
+variable	tcol equal PI/sqrt(2*${kn}/${minmass}-${damp}^2/4.0)
+variable	tcol equal PI/sqrt(2*1000000/${minmass}-${damp}^2/4.0)
+variable	tcol equal PI/sqrt(2*1000000/25446900494.0773-${damp}^2/4.0)
+variable	tcol equal PI/sqrt(2*1000000/25446900494.0773-0^2/4.0)
+variable	dt equal ${tcol}*0.02
+variable	dt equal 354.366223778754*0.02
+timestep	${dt}
+timestep	7.08732447557508
+
+compute stress all stress/atom NULL
+variable atomstress atom sqrt(c_stress[1]^2+c_stress[2]^2+c_stress[3]^2)
+variable buffer equal 5*${diam}
+variable buffer equal 5*6000
+pair_style  peri/ves
+pair_coeff * * 14.9e9 14.9e9 0.0015001 0.0005 0.25 0.50 0.001
+#pair_coeff   * * ${bulkmodulus} ${shearmodulus} ${buffer} 0.25 0.50 0.001
+
+#fix		1 all nve/sphere disc
+fix		1 all enforce2d
+#fix		2 all addforce v_totfx v_totfy 0.0
+fix		3 all balance 10000 1.1 rcb weight neigh 1.0
+#fix		wx all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 xplane ${x0} ${x1}
+#fix		wy all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 yplane ${x0} ${x1}
+
+###############################################
+# Run settings
+###############################################
+
+variable	dumpfreq equal 500
+variable	logfreq equal 100
+
+variable	skin equal 0.3*${diam}
+variable	skin equal 0.3*6000
+neighbor	${skin} bin
+neighbor	1800 bin
+
+comm_modify	vel yes cutoff ${diam}
+comm_modify	vel yes cutoff 6000
+
+thermo_style	custom step cpu atoms ke lx
+thermo_modify	flush yes lost warn
+thermo		${logfreq}
+thermo		100
+
+dump		1 all custom ${dumpfreq} pddemo.dump id type x y z v_velocity v_atomstress
+dump		1 all custom 500 pddemo.dump id type x y z v_velocity v_atomstress
+dump		3 all movie 500 movie.mpg type type axes yes 0.8 0.02 view 80 -30 adiam 0.0006
+dump_modify	3 pad 4
+run		30000
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 1800
+  ghost atom cutoff = 6000
+  binsize = 900.001, bins = 667 667 7
+  2 neighbor lists, perpetual/occasional/extra = 1 1 0
+  (1) pair peri/ves, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/2d/newton
+      bin: standard
+  (2) fix PERI_NEIGH, occasional
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/2d
+      bin: standard
+WARNING: Balance weight neigh skipped b/c no list found (../imbalance_neigh.cpp:65)
+Peridynamic bonds:
+  total # of bonds = 0
+  bonds/atom = 0
+Per MPI rank memory allocation (min/avg/max) = 9.915 | 9.915 | 9.915 Mbytes
+Step CPU Atoms KinEng Lx 
+       0            0     5000            0       600000 
+     100 0.0074658394     5000            0       600000 
+     200  0.014662981     5000            0       600000 
+     300  0.021963835     5000            0       600000 
+     400  0.032444954     5000            0       600000 
+     500  0.048835039     5000            0       600000 
+     600  0.056524992     5000            0       600000 
+     700  0.063875914     5000            0       600000 
+     800  0.073047876     5000            0       600000 
+     900   0.08118701     5000            0       600000 
+    1000  0.097606897     5000            0       600000 
+    1100   0.10673904     5000            0       600000 
+    1200   0.11421585     5000            0       600000 
+    1300   0.12302589     5000            0       600000 
+    1400   0.13114786     5000            0       600000 
+    1500   0.14701796     5000            0       600000 
+    1600   0.15468884     5000            0       600000 
+    1700   0.16145897     5000            0       600000 
+    1800   0.16838598     5000            0       600000 
+    1900   0.17569804     5000            0       600000 
+    2000   0.19189191     5000            0       600000 
+    2100   0.19862199     5000            0       600000 
+    2200   0.20579696     5000            0       600000 
+    2300   0.21259689     5000            0       600000 
+    2400   0.22116995     5000            0       600000 
+    2500     0.238446     5000            0       600000 
+    2600   0.24603701     5000            0       600000 
+    2700   0.25586605     5000            0       600000 
+    2800   0.26444983     5000            0       600000 
+    2900    0.2711699     5000            0       600000 
+    3000   0.29000783     5000            0       600000 
+    3100   0.29877186     5000            0       600000 
+    3200   0.30555296     5000            0       600000 
+    3300   0.31252885     5000            0       600000 
+    3400   0.31930995     5000            0       600000 
+    3500   0.35813999     5000            0       600000 
+    3600   0.36517406     5000            0       600000 
+    3700     0.372087     5000            0       600000 
+    3800   0.37880397     5000            0       600000 
+    3900   0.38639784     5000            0       600000 
+    4000   0.40554094     5000            0       600000 
+    4100   0.41289783     5000            0       600000 
+    4200   0.41984606     5000            0       600000 
+    4300   0.42652082     5000            0       600000 
+    4400     0.433218     5000            0       600000 
+    4500   0.45442486     5000            0       600000 
+    4600   0.46125102     5000            0       600000 
+    4700    0.4680109     5000            0       600000 
+    4800   0.47467494     5000            0       600000 
+    4900   0.48132706     5000            0       600000 
+    5000   0.49848294     5000            0       600000 
+    5100   0.50586104     5000            0       600000 
+    5200    0.5132699     5000            0       600000 
+    5300   0.52396393     5000            0       600000 
+    5400   0.53257394     5000            0       600000 
+    5500   0.54951286     5000            0       600000 
+    5600   0.55774403     5000            0       600000 
+    5700   0.56511188     5000            0       600000 
+    5800   0.57356596     5000            0       600000 
+    5900   0.58204389     5000            0       600000 
+    6000   0.60226583     5000            0       600000 
+    6100   0.60924292     5000            0       600000 
+    6200   0.61595583     5000            0       600000 
+    6300   0.62348604     5000            0       600000 
+    6400   0.63029099     5000            0       600000 
+    6500   0.64769888     5000            0       600000 
+    6600   0.65622187     5000            0       600000 
+    6700   0.66490293     5000            0       600000 
+    6800   0.67168403     5000            0       600000 
+    6900   0.67834401     5000            0       600000 
+    7000   0.69767499     5000            0       600000 
+    7100   0.70468283     5000            0       600000 
+    7200   0.71147203     5000            0       600000 
+    7300   0.71816802     5000            0       600000 
+    7400   0.72488689     5000            0       600000 
+    7500   0.74166203     5000            0       600000 
+    7600   0.74879098     5000            0       600000 
+    7700     0.757061     5000            0       600000 
+    7800   0.76566005     5000            0       600000 
+    7900   0.77638793     5000            0       600000 
+    8000   0.79377103     5000            0       600000 
+    8100   0.80118799     5000            0       600000 
+    8200   0.81129694     5000            0       600000 
+    8300   0.82040191     5000            0       600000 
+    8400   0.82721901     5000            0       600000 
+    8500   0.84352303     5000            0       600000 
+    8600   0.85102892     5000            0       600000 
+    8700   0.86137486     5000            0       600000 
+    8800   0.86830997     5000            0       600000 
+    8900   0.87637496     5000            0       600000 
+    9000   0.89704394     5000            0       600000 
+    9100   0.90441203     5000            0       600000 
+    9200   0.91122389     5000            0       600000 
+    9300   0.91961694     5000            0       600000 
+    9400   0.92711306     5000            0       600000 
+    9500   0.94753599     5000            0       600000 
+    9600   0.95467687     5000            0       600000 
+    9700   0.96161699     5000            0       600000 
+    9800   0.96831298     5000            0       600000 
+    9900   0.97495699     5000            0       600000 
