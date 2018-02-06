@@ -3,18 +3,32 @@
 ###################
 variable lxfunl equal ${lx}*0.40
 variable lxfunr equal ${lx}*0.60
-variable lyfun  equal ${lx}*0.25+${ly2}
-variable lzfun  equal ${diam}*0.5
+variable lyfun  equal ${ly2}*0.25
 
-#region fun1 prism 0.0 ${lxfunl} ${ly2} ${lyfun} -${lzfun} ${lzfun} -${lxfunl} 0.0 0.0 units box
-#region fun2 prism ${lxfunr} ${lx} ${ly2} ${lyfun} -${lzfun} ${lzfun} ${lxfunl} 0.0 0.0 units box
-#region fun3 block 0.0 ${lxfunl} ${lyfun} ${lx} -${diam} ${diam} units box
-#region fun4 block ${lxfunr} ${lx} ${lyfun} ${lx} -${lzfun} ${lzfun} units box
+#Exclusive Test: Inoperable
+#region fun1 prism ${x0} ${lxfunl} ${lyfun} ${ly2} -${rad} ${rad} ${lxfunl} 0.0 0.0 units box
+#region fun2 prism ${lxfunr} ${x1} ${lyfun} ${ly2} -${rad} ${rad} -${lxfunl} 0.0 0.0 units box
+#region fun3 block ${x0} ${lxfunl} 0.0 ${lyfun} -${rad} ${rad} units box
+#region fun4 block ${lxfunr} ${x1} 0.0 ${lyfun} -${rad} ${rad} units box
 
 #region funl union 2 fun1 fun3
 #fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region funl
 #region funr union 2 fun3 fun4
 #fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region funr
 
-region test block 0.0 ${ly2} 0.0 ${ly2} -${lzfun} ${lzfun} units box
-fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region test
+#Inclusive Test: Pending
+region initial block ${x0} ${x1} ${ly2} ${lx} -${rad} ${rad} units box
+
+region ltemp block ${x0} ${lxfunl} ${x0} ${ly2} -${rad} ${rad} units box
+region rtemp block ${lxfunr} ${x1} ${x0} ${ly2} -${rad} ${rad} units box
+region lcone prism ${lxfunl} ${x1} ${lyfun} ${ly2} -${rad} ${rad} -${lxfunl} 0.0 0.0 units box
+region rcone prism ${x0} ${lxfunr} ${lyfun} ${ly2} -${rad} ${rad}  ${lxfunl} 0.0 0.0 units box
+region lramp intersect 2 ltemp lcone
+region rramp intersect 2 rtemp rcone
+
+region steml block ${x0} ${lxfunr} ${x0} ${ly2} -${rad} ${rad} units box
+region stemr block ${lxfunl} ${x1} ${x0} ${ly2} -${rad} ${rad} units box
+region stem intersect 2 steml stemr
+
+region fun union 4 lramp rramp stem initial
+fix wall all wall/gran/region hooke 1e7 ${kt} ${damp} 0 ${coeffFric} 1 region fun
