@@ -119,4 +119,4 @@ thermo		${logfreq}
 dump		1 all custom ${dumpfreq} ../data/DUMP/gran_1.dump id type mass diameter x y z &
     v_velocity v_axialstress v_shearstress
 
-run		3000
+run		60000
