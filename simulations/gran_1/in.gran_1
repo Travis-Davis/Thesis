@@ -116,7 +116,7 @@ thermo_style	custom step cpu atoms ke lx
 thermo_modify	flush yes lost warn
 thermo		${logfreq}
 
-dump		1 all custom ${dumpfreq} DUMP/gran_1.dump id type mass diameter x y z &
-              v_velocity v_axialstress v_shearstress
+dump		1 all custom ${dumpfreq} ../data/DUMP/gran_1.dump id type mass diameter x y z &
+    v_velocity v_axialstress v_shearstress
 
 run		3000
