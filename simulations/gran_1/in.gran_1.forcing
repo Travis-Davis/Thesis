@@ -36,7 +36,7 @@
 
 #Experimental
 #Uniaxial convergent (linear) wind field
-#variable windmaxx equal 5
+#variable windmaxx equal 10
 #variable windmaxy equal 0
 #variable windmx   equal -${windmaxx}/${lx}
 #variable windmy   equal -${windmaxy}/${lx}
