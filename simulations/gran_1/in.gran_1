@@ -34,11 +34,12 @@ variable    oceanDragCoefficient equal 0.0045
 # Geometry-related parameters
 ###############################################
 
-variable    nx equal 100
-variable    ny equal 0.5*${nx}
-variable    n_actual equal floor(${nx}*${ny})
-variable    lx equal ${nx}*${diam}
-variable    ly2 equal 0.5*${lx}
+variable    nx equal  100
+variable    ny equal  0.5*${nx}
+variable    n_actual  equal floor(${nx}*${ny})
+variable    lx equal  ${nx}*${diam}
+variable    ly equal  ${lx}*1.5
+variable    ly2 equal ${lx}
 
 ###############################################
 # Create box
@@ -47,17 +48,19 @@ boundary    f f p
 
 variable    x0 equal 0
 variable    x1 equal ${lx}
-region      boxreg block ${x0} ${x1} ${x0} ${x1} -${rad} ${rad}
+variable    y0 equal 0
+variable    y1 equal ${ly}
+region      boxreg block ${x0} ${x1} ${y0} ${y1} -${rad} ${rad} units box
 create_box  1 boxreg
 
 lattice	    sq ${diam} origin 0.5 0.5 0
-region      tophalf block 0 ${lx} ${ly2} ${lx} -${rad} ${rad} units box
+region      topthird block ${x0} ${x1} ${ly2} ${y1} -${rad} ${rad} units box
 
 ###############################################
 # Create atoms
 ###############################################
 
-create_atoms  1 region tophalf
+create_atoms  1 region topthird
 
 ###############################################
 # Includes
@@ -86,37 +89,34 @@ variable    tcol equal PI/sqrt(2*${kn}/${minmass}-${damp}^2/4.0)
 variable    dt equal ${tcol}*0.02
 timestep    ${dt}
 
-# Test
+
 pair_style	gran/hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1
 pair_coeff  * *
-#pair_style hybrid/overlay soft 3000 gran/hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1
-#pair_coeff	* * soft -10000000000
-#pair_coeff  * * gran/hooke
 
-fix		1 all nve/sphere disc
-fix		2 all enforce2d
-fix		3 all addforce v_totfx v_totfy 0.0
-fix		4 all balance 10000 1.1 rcb weight neigh 1.0
+fix		1 all  nve/sphere disc
+fix		2 all  enforce2d
+fix		3 all  addforce v_totfx v_totfy 0.0
+fix		4 all  balance 10000 1.1 rcb weight neigh 1.0
 fix		wx all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 xplane ${x0} ${x1}
-fix		wy all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 yplane ${x0} ${x1}
+fix		wy all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 yplane ${y0} ${y1}
 
 ###############################################
 # Run settings
 ###############################################
 
-variable	dumpfreq equal 500
-variable	logfreq equal 100
+variable      dumpfreq equal 500
+variable      logfreq equal 100
 
-variable	skin equal 0.3*${diam}
-neighbor	${skin} bin
+variable      skin equal 0.3*${diam}
+neighbor      ${skin} bin
 
-comm_modify	vel yes cutoff ${diam}
+comm_modify	  vel yes cutoff ${diam}
 
 thermo_style	custom step cpu atoms ke lx
 thermo_modify	flush yes lost warn
-thermo		${logfreq}
+thermo        ${logfreq}
 
-dump		1 all custom ${dumpfreq} ../data/DUMP/gran_1.dump id type mass diameter x y z &
-    v_velocity v_axialstress v_shearstress
+dump 1        all custom ${dumpfreq} ../data/DUMP/gran_1.dump id type mass &
+              diameter x y z v_velocity v_axialstress v_shearstress
 
 run		60000

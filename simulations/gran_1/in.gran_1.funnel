@@ -1,34 +1,24 @@
 ###################
 # funnel          #
 ###################
-variable lxfunl equal ${lx}*0.40
-variable lxfunr equal ${lx}*0.60
-variable lyfun  equal ${ly2}*0.25
+variable xfunl equal ${lx}*0.40
+variable xfunr equal ${lx}*0.60
+variable yfunb equal ${ly}*0.50
+variable ystmb equal ${ly2}*0.50
 
-#Exclusive Test: Inoperable
-#region fun1 prism ${x0} ${lxfunl} ${lyfun} ${ly2} -${rad} ${rad} ${lxfunl} 0.0 0.0 units box
-#region fun2 prism ${lxfunr} ${x1} ${lyfun} ${ly2} -${rad} ${rad} -${lxfunl} 0.0 0.0 units box
-#region fun3 block ${x0} ${lxfunl} 0.0 ${lyfun} -${rad} ${rad} units box
-#region fun4 block ${lxfunr} ${x1} 0.0 ${lyfun} -${rad} ${rad} units box
+region ltemp block ${x0} ${xfunl} ${y0} ${y1} -${rad} ${rad} units box
+region rtemp block ${xfunr} ${x1} ${y0} ${y1} -${rad} ${rad} units box
+region lcone prism ${xfunl} ${x1} ${yfunb} ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region rcone prism ${x0} ${xfunr} ${yfunb} ${ly2} -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
 
-#region funl union 2 fun1 fun3
-#fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region funl
-#region funr union 2 fun3 fun4
-#fix wall all wall/gran/region hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 region funr
-
-#Inclusive Test: Pending
-region initial block ${x0} ${x1} ${ly2} ${lx} -${rad} ${rad} units box
-
-region ltemp block ${x0} ${lxfunl} ${x0} ${ly2} -${rad} ${rad} units box
-region rtemp block ${lxfunr} ${x1} ${x0} ${ly2} -${rad} ${rad} units box
-region lcone prism ${lxfunl} ${x1} ${lyfun} ${ly2} -${rad} ${rad} -${lxfunl} 0.0 0.0 units box
-region rcone prism ${x0} ${lxfunr} ${lyfun} ${ly2} -${rad} ${rad}  ${lxfunl} 0.0 0.0 units box
 region lramp intersect 2 ltemp lcone
 region rramp intersect 2 rtemp rcone
 
-region steml block ${x0} ${lxfunr} ${x0} ${ly2} -${rad} ${rad} units box
-region stemr block ${lxfunl} ${x1} ${x0} ${ly2} -${rad} ${rad} units box
-region stem intersect 2 steml stemr
+region steml block ${x0} ${xfunr} ${ystmb} ${lx} -${rad} ${rad} units box
+region stemr block ${xfunl} ${x1} ${ystmb} ${lx} -${rad} ${rad} units box
+region stem  intersect 2 steml stemr
 
-region fun union 4 lramp rramp stem initial
-fix wall all wall/gran/region hooke 1e7 ${kt} ${damp} 0 ${coeffFric} 1 region fun
+region bottom  block ${x0} ${x1} ${y0} ${ystmb} -${rad} ${rad} units box
+
+region fun union 5 topthird lramp rramp stem bottom
+fix wall all wall/gran/region hooke 2e7 ${kt} ${damp} 0 ${coeffFric} 1 region fun
