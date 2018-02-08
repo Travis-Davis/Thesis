@@ -31,10 +31,14 @@ def write_frame_vtk(particles, basename, istep):
     f.write("LOOKUP_TABLE default\n")
     for p in particles:
         f.write(str(p.vel)+" ")
-    f.write("\nSCALARS Stress float 1\n")
+    f.write("\nSCALARS Axial_Stress float 1\n")
     f.write("LOOKUP_TABLE default\n")
     for p in particles:
-        f.write(str(p.sts)+" ")
+        f.write(str(p.axi)+" ")
+    f.write("\nSCALARS Shear_Stress float 1\n")
+    f.write("LOOKUP_TABLE default\n")
+    for p in particles:
+        f.write(str(p.she)+" ")
     f.close()
 
 def main():
@@ -67,7 +71,8 @@ def main():
     ycol = 5
     rcol = 3
     vcol = 7
-    scol = 8
+    acol = 8
+    scol = 9
 
     #Quick and dirty: assumes entire dump file fits into memory.
     #Eventually do this via buffering scheme
@@ -104,7 +109,7 @@ def main():
                     if not atomline:
                         break
                     p=Particle()
-                    p.x,p.y,p.rad,p.vel,p.sts = np.array(atomline.split(" "))[[xcol,ycol,rcol,vcol,scol]].astype(float)
+                    p.x,p.y,p.rad,p.vel,p.axi,p.she = np.array(atomline.split(" "))[[xcol,ycol,rcol,vcol,acol,scol]].astype(float)
                     particles.append(p)
                 write_frame_vtk(particles, basename, istep)
                 break

@@ -78,8 +78,8 @@ compute     rad all property/atom radius
 variable    area atom PI*c_rad^2
 variable    velocity atom sqrt(vx*vx+vy*vy)
 compute     stress all stress/atom NULL
-variable    axialstress atom 1/2*(c_stress[1]+c_stress[2])
-variable    shearstress atom 1/2*(c_stress[1]-c_stress[2])
+variable    axialstress atom 1/2*(c_stress[2]+c_stress[1])
+variable    shearstress atom 1/2*(c_stress[2]-c_stress[1])
 
 ###############################################
 # Fixes and pair styles
@@ -119,4 +119,4 @@ thermo        ${logfreq}
 dump 1        all custom ${dumpfreq} ../data/DUMP/gran_1.dump id type mass &
               diameter x y z v_velocity v_axialstress v_shearstress
 
-run		60000
+run		45000
