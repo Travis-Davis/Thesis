@@ -1,0 +1,24 @@
+###################
+# funnel          #
+###################
+variable xfunl equal ${lx}*0.40
+variable xfunr equal ${lx}*0.60
+variable yfunb equal ${ly}*0.50
+variable ystmb equal ${ly2}*0.50
+
+region ltemp block ${x0} ${xfunl} ${y0} ${y1} -${rad} ${rad} units box
+region rtemp block ${xfunr} ${x1} ${y0} ${y1} -${rad} ${rad} units box
+region lcone prism ${xfunl} ${x1} ${yfunb} ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region rcone prism ${x0} ${xfunr} ${yfunb} ${ly2} -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
+
+region lramp intersect 2 ltemp lcone
+region rramp intersect 2 rtemp rcone
+
+region steml block ${x0} ${xfunr} ${ystmb} ${lx} -${rad} ${rad} units box
+region stemr block ${xfunl} ${x1} ${ystmb} ${lx} -${rad} ${rad} units box
+region stem  intersect 2 steml stemr
+
+region bottom  block ${x0} ${x1} ${y0} ${ystmb} -${rad} ${rad} units box
+
+region fun union 5 topthird lramp rramp stem bottom
+fix wall all wall/gran/region hooke 2e7 ${kt} ${damp} 0 ${coeffFric} 1 region fun
