@@ -89,7 +89,6 @@ variable    tcol equal PI/sqrt(2*${kn}/${minmass}-${damp}^2/4.0)
 variable    dt equal ${tcol}*0.02
 timestep    ${dt}
 
-
 pair_style	gran/hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1
 pair_coeff  * *
 

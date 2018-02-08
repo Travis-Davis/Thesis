@@ -15,5 +15,3 @@ Simulation parameters
     Status: Pending
     a. Implement Funnel Geometry: implemented
     b. Implement Relief Area:     partially-implemented//could stand to be larger
-    c. Implement rounded corner:  Pending
-       1. Round off corners in the funnel to eliminate point loading of particles.
