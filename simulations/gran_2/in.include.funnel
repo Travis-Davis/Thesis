@@ -6,6 +6,8 @@ variable xfunr equal ${lx}*0.60
 variable yfunb equal ${ly}*0.50
 variable ystmb equal ${ly2}*0.50
 
+region topthird block ${x0} ${x1} ${ly2} ${y1} -${rad} ${rad} units box
+
 region ltemp block ${x0} ${xfunl} ${y0} ${y1} -${rad} ${rad} units box
 region rtemp block ${xfunr} ${x1} ${y0} ${y1} -${rad} ${rad} units box
 region lcone prism ${xfunl} ${x1} ${yfunb} ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
