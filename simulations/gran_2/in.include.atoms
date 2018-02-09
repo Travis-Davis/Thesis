@@ -5003,4 +5003,3 @@ set   atom 4999 diameter 4491.619589
 set   atom 5000 diameter 3865.504994
 
 set		group all density ${dens}
-set		group all mass ${minmass}

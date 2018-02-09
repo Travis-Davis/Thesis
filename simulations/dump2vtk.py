@@ -27,6 +27,10 @@ def write_frame_vtk(particles, basename, istep):
     f.write("LOOKUP_TABLE default\n")
     for p in particles:
         f.write(str(p.rad)+" ")
+    f.write("SCALARS Mass float 1\n")
+    f.write("LOOKUP_TABLE default\n")
+    for p in particles:
+        f.write(str(p.mas)+" ")
     f.write("\nSCALARS Velocity float 1\n")
     f.write("LOOKUP_TABLE default\n")
     for p in particles:
@@ -69,6 +73,7 @@ def main():
     # (can easily add more per-particle values, see p.x,p.y,p.rad line below)
     xcol = 4
     ycol = 5
+    mcol = 2
     rcol = 3
     vcol = 7
     acol = 8
@@ -109,7 +114,7 @@ def main():
                     if not atomline:
                         break
                     p=Particle()
-                    p.x,p.y,p.rad,p.vel,p.axi,p.she = np.array(atomline.split(" "))[[xcol,ycol,rcol,vcol,acol,scol]].astype(float)
+                    p.x,p.y,p.rad,p.mas,p.vel,p.axi,p.she = np.array(atomline.split(" "))[[xcol,ycol,rcol,mcol,vcol,acol,scol]].astype(float)
                     particles.append(p)
                 write_frame_vtk(particles, basename, istep)
                 break
