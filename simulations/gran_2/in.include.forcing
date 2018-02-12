@@ -50,7 +50,7 @@
 
 #Uniaxial non-convergent
   variable windmagx   equal 0.0
-  variable windmagy   equal -10
+  variable windmagy   equal -15
 
   variable ugx        atom  v_windmagx
   variable ugy        atom  v_windmagy

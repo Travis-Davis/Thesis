@@ -15,7 +15,7 @@ variable    kn equal 1e6
 variable    damp equal 0.0
 variable    coeffFric equal 0.3
 variable    kt equal 0.5*${kn}
-variable    thickness equal 1.0
+variable    rad equal 5000
 
 variable    omega equal 0.5*10^(-3)
 variable    lambda equal 8.0*10^5
@@ -104,4 +104,4 @@ thermo        ${logfreq}
 dump 1        all custom ${dumpfreq} ../data/DUMP/gran_2.dump id type mass &
               diameter x y z v_velocity v_axialstress v_shearstress
 
-run		45000
+run           300000

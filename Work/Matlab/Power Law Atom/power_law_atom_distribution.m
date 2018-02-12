@@ -9,6 +9,8 @@ N    = 5000;
 mean = 1250;
 rmin = 250;
 rmax = 20000;
+rho  = 900;
+h    = 1;
 
 % Atom Region Specifications
 x0 = 0;
@@ -27,6 +29,10 @@ while i <= N
 end
 
 rad = sort(rad,'descend');
+mass = rho*h*pi*(rad).^2;
+
+diam = max(rad);
+minmass = min(mass);
 
 area = sum(pi*(rad).^2);
 domain = (y1-y0)*(x1-x0);
@@ -35,10 +41,6 @@ if 1.25*area > domain
     fprintf('Overpack: Reduce N or r,mean\n')
     return
 end
-
-%validate
-%figure
-%hist(rad)
 
 %% Generate x,y coordinates
 
@@ -97,8 +99,22 @@ while k <= N
 
 end
 
-figure
-image(1000*mask)
-        
-    
+%% .in Script Generation
+% Element Generation
+fileID = fopen('in.include.atoms','w');
 
+fprintf(fileID,'###################\n');
+fprintf(fileID,'# Atom Parameters #\n');
+fprintf(fileID,'###################\n\n');
+
+fprintf(fileID,sprintf('variable minmass equal %f\n',minmass));
+fprintf(fileID,sprintf('variable diam equal %f\n',diam));
+
+for i =  1:N
+    fprintf(fileID,sprintf('create_atoms 1 single %f %f %f\n',x_ele(i),y_ele(i),0));
+end
+
+for i =  1:N
+    fprintf(fileID,sprintf('set   atom %g diameter %f\n',i,2*rad(i)));
+    fprintf(fileID,sprintf('set   atom %g mass %f\n',i,mass(i)));
+end
