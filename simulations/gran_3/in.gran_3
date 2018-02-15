@@ -63,7 +63,7 @@ variable    velocity atom sqrt(vx*vx+vy*vy)
 compute     stress all stress/atom NULL
 variable    stressdet   atom c_stress[1]*c_stress[2]-2*c_stress[4]
 variable    axialstress atom c_stress[2]+c_stress[1]
-variable    shearstress atom sqrt(v_axialstress^2-4*v_stressdet)
+variable    shearstress atom sqrt(abs(v_axialstress^2-4*v_stressdet)) ## This may not be valid!!!!
 
 ###############################################
 # Fixes and pair styles
@@ -102,6 +102,6 @@ thermo_modify	flush yes lost warn
 thermo        ${logfreq}
 
 dump 1        all custom ${dumpfreq} ../data/DUMP/gran_3.dump id type mass &
-              diameter x y z v_velocity v_axialstress v_shearstress
+              radius x y z v_velocity v_axialstress v_shearstress
 
-run           10000
+run           60000
