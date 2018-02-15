@@ -7,7 +7,7 @@ clc
 %% Parameters
 N    = 5000;
 mean = 1250;
-rmin = 250;
+rmin = 500;
 rmax = 20000;
 rho  = 900;
 h    = 1;
@@ -101,7 +101,7 @@ end
 
 %% .in Script Generation
 % Element Generation
-fileID = fopen('in.include.atoms','w');
+fileID = fopen('in.include.atoms.power','w');
 
 fprintf(fileID,'###################\n');
 fprintf(fileID,'# Atom Parameters #\n');
