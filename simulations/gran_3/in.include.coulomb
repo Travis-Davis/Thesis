@@ -2,8 +2,15 @@
 # Coulombic Failure Criteria     #
 ##################################
 
-# Variables available from input:
-#   v_thickness
+## Constants
+variable dens equal 900
+variable mu   equal 0.6
+variable h    atom  4*v_mass/(PI*${dens}*v_diameter^2)
+variable sigt atom  0
+variable sigc atom  -1e6
 
-#variable sigc equal 1e6
-#variable sigs equal 1e6
+#variable rten atom  (v_axialstress>v_sigt)*diameter*.05
+variable rcom atom -(v_axialstress<v_sigc)*diameter*.05
+#variable rshe atom -(abs(v_shearstress)>${mu}*(v_axialstress-v_sigt))*diameter*.05
+
+set atom * diameter $((v_axialstress>${sigt})*diameter*.05-(v_axialstress<v_sigc)*diameter*.05-(abs(v_shearstress)>${mu}*(v_axialstress-v_sigt))*diameter*.05+diameter)
