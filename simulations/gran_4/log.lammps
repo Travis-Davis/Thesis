@@ -1,0 +1,11 @@
+LAMMPS (17 Jan 2018)
+read_restart ../data/restart/restart.gran_4.mpiio
+  orthogonal box = (0 0 -5000) to (500000 750000 5000)
+  1 by 1 by 1 MPI processor grid
+  4650 atoms
+
+###############################################
+# General settings
+###############################################
+
+log         gran_4.log

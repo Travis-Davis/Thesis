@@ -1,0 +1,496 @@
+
+###############################################
+# Size, contact parameters
+###############################################
+
+variable    kn equal 1e6
+variable    damp equal 0.0
+variable    coeffFric equal 0.3
+variable    kt equal 0.5*${kn}
+variable    kt equal 0.5*1000000
+variable    rad equal 5000
+
+variable    omega equal 0.5*10^(-3)
+variable    lambda equal 8.0*10^5
+
+variable    airDensity equal 1.225
+variable    waterDensity equal 1017.0
+variable    windDragCoefficient equal 0.015
+variable    oceanDragCoefficient equal 0.0045
+
+###############################################
+# Geometry-related parameters
+###############################################
+
+variable    lx equal  500000
+variable    ly equal  ${lx}*1.5
+variable    ly equal  500000*1.5
+variable    ly2 equal ${lx}
+variable    ly2 equal 500000
+
+variable    x0 equal 0
+variable    x1 equal ${lx}
+variable    x1 equal 500000
+variable    y0 equal 0
+variable    y1 equal ${ly}
+variable    y1 equal 750000
+
+###############################################
+# Simulation Initialization Includes
+###############################################
+
+include     in.include.atoms.update
+variable minmass equal 11309733552.923256
+variable diam equal 4000.000000
+set atom 4160 diameter 81.102600
+  1 settings made for diameter
+set atom 187 diameter 72.992340
+  1 settings made for diameter
+set atom 819 diameter 354.517200
+  1 settings made for diameter
+set atom 567 diameter 287.159400
+  1 settings made for diameter
+set atom 3186 diameter 2916.000000
+  1 settings made for diameter
+set atom 3675 diameter 486.306000
+  1 settings made for diameter
+set atom 442 diameter 437.675400
+  1 settings made for diameter
+set atom 1013 diameter 319.066200
+  1 settings made for diameter
+set atom 3312 diameter 2361.960000
+  1 settings made for diameter
+set atom 4408 diameter 287.159400
+  1 settings made for diameter
+set atom 194 diameter 258.444000
+  1 settings made for diameter
+set atom 701 diameter 1016.744400
+  1 settings made for diameter
+set atom 383 diameter 667.085400
+  1 settings made for diameter
+set atom 952 diameter 1016.744400
+  1 settings made for diameter
+set atom 4109 diameter 319.066200
+  1 settings made for diameter
+set atom 259 diameter 540.340200
+  1 settings made for diameter
+set atom 3252 diameter 1721.865600
+  1 settings made for diameter
+set atom 3375 diameter 1913.184000
+  1 settings made for diameter
+set atom 3681 diameter 1129.716000
+  1 settings made for diameter
+set atom 451 diameter 486.306000
+  1 settings made for diameter
+set atom 4173 diameter 1129.716000
+  1 settings made for diameter
+set atom 955 diameter 741.205800
+  1 settings made for diameter
+set atom 200 diameter 486.306000
+  1 settings made for diameter
+set atom 770 diameter 915.069600
+  1 settings made for diameter
+set atom 72 diameter 667.085400
+  1 settings made for diameter
+set atom 71 diameter 188.406000
+  1 settings made for diameter
+set atom 959 diameter 2624.400000
+  1 settings made for diameter
+set atom 1084 diameter 1721.865600
+  1 settings made for diameter
+set atom 1893 diameter 3600.000000
+  1 settings made for diameter
+set atom 3810 diameter 540.340200
+  1 settings made for diameter
+set atom 3809 diameter 2624.400000
+  1 settings made for diameter
+set atom 1149 diameter 1394.712000
+  1 settings made for diameter
+set atom 3566 diameter 1721.865600
+  1 settings made for diameter
+set atom 3444 diameter 1394.712000
+  1 settings made for diameter
+set atom 143 diameter 1255.240800
+  1 settings made for diameter
+set atom 1647 diameter 2624.400000
+  1 settings made for diameter
+set atom 3997 diameter 1255.240800
+  1 settings made for diameter
+set atom 4059 diameter 3240.000000
+  1 settings made for diameter
+set atom 523 diameter 1721.865600
+  1 settings made for diameter
+set atom 3691 diameter 1255.240800
+  1 settings made for diameter
+set atom 400 diameter 741.205800
+  1 settings made for diameter
+set atom 779 diameter 915.069600
+  1 settings made for diameter
+set atom 1215 diameter 2624.400000
+  1 settings made for diameter
+set atom 3755 diameter 2125.764000
+  1 settings made for diameter
+set atom 25 diameter 319.066200
+  1 settings made for diameter
+set atom 469 diameter 2624.400000
+  1 settings made for diameter
+set atom 781 diameter 2916.000000
+  1 settings made for diameter
+set atom 594 diameter 1913.184000
+  1 settings made for diameter
+set atom 782 diameter 2125.764000
+  1 settings made for diameter
+set atom 1092 diameter 2916.000000
+  1 settings made for diameter
+set atom 3448 diameter 2624.400000
+  1 settings made for diameter
+set atom 4492 diameter 1016.744400
+  1 settings made for diameter
+set atom 4554 diameter 667.085400
+  1 settings made for diameter
+set atom 92 diameter 1016.744400
+  1 settings made for diameter
+set atom 89 diameter 354.517200
+  1 settings made for diameter
+set atom 345 diameter 915.069600
+  1 settings made for diameter
+set atom 3573 diameter 2916.000000
+  1 settings made for diameter
+set atom 3635 diameter 3240.000000
+  1 settings made for diameter
+set atom 4555 diameter 823.563000
+  1 settings made for diameter
+set atom 470 diameter 1913.184000
+  1 settings made for diameter
+set atom 4556 diameter 1255.240800
+  1 settings made for diameter
+set atom 4438 diameter 741.205800
+  1 settings made for diameter
+set atom 847 diameter 3240.000000
+  1 settings made for diameter
+set atom 1467 diameter 3600.000000
+  1 settings made for diameter
+set atom 4317 diameter 1913.184000
+  1 settings made for diameter
+set atom 4257 diameter 2125.764000
+  1 settings made for diameter
+set atom 100 diameter 1913.184000
+  1 settings made for diameter
+set atom 4380 diameter 1721.865600
+  1 settings made for diameter
+set atom 103 diameter 2125.764000
+  1 settings made for diameter
+set atom 102 diameter 2125.764000
+  1 settings made for diameter
+set atom 1468 diameter 3600.000000
+  1 settings made for diameter
+set atom 4629 diameter 1913.184000
+  1 settings made for diameter
+set atom 104 diameter 2361.960000
+  1 settings made for diameter
+set atom 105 diameter 2361.960000
+  1 settings made for diameter
+set atom 167 diameter 2916.000000
+  1 settings made for diameter
+set atom 1469 diameter 3600.000000
+  1 settings made for diameter
+set atom 4321 diameter 3240.000000
+  1 settings made for diameter
+include     in.include.funnel
+###################
+# funnel          #
+###################
+variable xfunl equal ${lx}*0.40
+variable xfunl equal 500000*0.40
+variable xfunr equal ${lx}*0.60
+variable xfunr equal 500000*0.60
+variable yfunb equal ${ly}*0.50
+variable yfunb equal 750000*0.50
+variable ystmb equal ${ly2}*0.50
+variable ystmb equal 500000*0.50
+
+region topthird block ${x0} ${x1} ${ly2} ${y1} -${rad} ${rad} units box
+region topthird block 0 ${x1} ${ly2} ${y1} -${rad} ${rad} units box
+region topthird block 0 500000 ${ly2} ${y1} -${rad} ${rad} units box
+region topthird block 0 500000 500000 ${y1} -${rad} ${rad} units box
+region topthird block 0 500000 500000 750000 -${rad} ${rad} units box
+region topthird block 0 500000 500000 750000 -5000 ${rad} units box
+region topthird block 0 500000 500000 750000 -5000 5000 units box
+
+region ltemp block ${x0} ${xfunl} ${y0} ${y1} -${rad} ${rad} units box
+region ltemp block 0 ${xfunl} ${y0} ${y1} -${rad} ${rad} units box
+region ltemp block 0 200000 ${y0} ${y1} -${rad} ${rad} units box
+region ltemp block 0 200000 0 ${y1} -${rad} ${rad} units box
+region ltemp block 0 200000 0 750000 -${rad} ${rad} units box
+region ltemp block 0 200000 0 750000 -5000 ${rad} units box
+region ltemp block 0 200000 0 750000 -5000 5000 units box
+region rtemp block ${xfunr} ${x1} ${y0} ${y1} -${rad} ${rad} units box
+region rtemp block 300000 ${x1} ${y0} ${y1} -${rad} ${rad} units box
+region rtemp block 300000 500000 ${y0} ${y1} -${rad} ${rad} units box
+region rtemp block 300000 500000 0 ${y1} -${rad} ${rad} units box
+region rtemp block 300000 500000 0 750000 -${rad} ${rad} units box
+region rtemp block 300000 500000 0 750000 -5000 ${rad} units box
+region rtemp block 300000 500000 0 750000 -5000 5000 units box
+region lcone prism ${xfunl} ${x1} ${yfunb} ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 ${x1} ${yfunb} ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 500000 ${yfunb} ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 500000 375000 ${ly2} -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 500000 375000 500000 -${rad} ${rad} -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 500000 375000 500000 -5000 ${rad} -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 500000 375000 500000 -5000 5000 -${xfunl} 0.0 0.0 units box
+region lcone prism 200000 500000 375000 500000 -5000 5000 -200000 0.0 0.0 units box
+region rcone prism ${x0} ${xfunr} ${yfunb} ${ly2} -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 ${xfunr} ${yfunb} ${ly2} -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 300000 ${yfunb} ${ly2} -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 300000 375000 ${ly2} -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 300000 375000 500000 -${rad} ${rad}  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 300000 375000 500000 -5000 ${rad}  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 300000 375000 500000 -5000 5000  ${xfunl} 0.0 0.0 units box
+region rcone prism 0 300000 375000 500000 -5000 5000  200000 0.0 0.0 units box
+
+region lramp intersect 2 ltemp lcone
+region rramp intersect 2 rtemp rcone
+
+region steml block ${x0} ${xfunr} ${ystmb} ${lx} -${rad} ${rad} units box
+region steml block 0 ${xfunr} ${ystmb} ${lx} -${rad} ${rad} units box
+region steml block 0 300000 ${ystmb} ${lx} -${rad} ${rad} units box
+region steml block 0 300000 250000 ${lx} -${rad} ${rad} units box
+region steml block 0 300000 250000 500000 -${rad} ${rad} units box
+region steml block 0 300000 250000 500000 -5000 ${rad} units box
+region steml block 0 300000 250000 500000 -5000 5000 units box
+region stemr block ${xfunl} ${x1} ${ystmb} ${lx} -${rad} ${rad} units box
+region stemr block 200000 ${x1} ${ystmb} ${lx} -${rad} ${rad} units box
+region stemr block 200000 500000 ${ystmb} ${lx} -${rad} ${rad} units box
+region stemr block 200000 500000 250000 ${lx} -${rad} ${rad} units box
+region stemr block 200000 500000 250000 500000 -${rad} ${rad} units box
+region stemr block 200000 500000 250000 500000 -5000 ${rad} units box
+region stemr block 200000 500000 250000 500000 -5000 5000 units box
+region stem  intersect 2 steml stemr
+
+region bottom  block ${x0} ${x1} ${y0} ${ystmb} -${rad} ${rad} units box
+region bottom  block 0 ${x1} ${y0} ${ystmb} -${rad} ${rad} units box
+region bottom  block 0 500000 ${y0} ${ystmb} -${rad} ${rad} units box
+region bottom  block 0 500000 0 ${ystmb} -${rad} ${rad} units box
+region bottom  block 0 500000 0 250000 -${rad} ${rad} units box
+region bottom  block 0 500000 0 250000 -5000 ${rad} units box
+region bottom  block 0 500000 0 250000 -5000 5000 units box
+
+region fun union 5 topthird lramp rramp stem bottom
+fix wall all wall/gran/region hooke 2e7 ${kt} ${damp} 0 ${coeffFric} 1 region fun
+fix wall all wall/gran/region hooke 2e7 500000 ${damp} 0 ${coeffFric} 1 region fun
+fix wall all wall/gran/region hooke 2e7 500000 0 0 ${coeffFric} 1 region fun
+fix wall all wall/gran/region hooke 2e7 500000 0 0 0.3 1 region fun
+Resetting global fix info from restart file:
+  fix style: wall/gran/region, fix ID: wall
+include     in.include.forcing
+###################
+#     Forcing     #
+###################
+
+###############################################
+# Forcing Schemes
+###############################################
+
+#Vortex
+  #variable	xc        equal 0.5*${lx}
+  #variable	yc        equal 0.5*${lx}-50000.0
+  #variable	rx        atom  x-${xc}
+  #variable	ry        atom  y-${yc}
+  #variable	rmag      atom  sqrt(v_rx^2+v_ry^2)
+  #variable	rxn       atom  v_rx/v_rmag
+  #variable	ryn       atom  v_ry/v_rmag
+  #variable	kcrossrx  atom  -v_ryn
+  #variable	kcrossry  atom  v_rxn
+  #variable	omegaR    atom  ${omega}*v_rmag
+  #variable	lR        atom  ${lambda}/v_rmag
+  #variable	prefac    atom  (v_omegaR<v_lR)*v_omegaR+(v_lR<=v_omegaR)*v_lR
+  #variable	ugx       atom  v_prefac*v_kcrossrx
+  #variable	ugy       atom  v_prefac*v_kcrossry
+
+#Convergent wind-field at xc // Periodic (no y-component)
+  #variable windmagx  equal 10
+  #variable windmagy  equal 7
+  #variable xc        equal 0.5*${lx}
+  #variable knumx     equal PI/${xc} # One COS peak in wind field
+  #variable rot       equal 1
+  #variable deltheta  equal 2*PI*${rot}
+  #variable angramp   atom  ramp(0,${deltheta})
+  #variable wper      atom  cos(${knumx}*(${xc}-x)+v_angramp)
+
+  #variable xbool     atom  v_wper*((x<${xc})+(x>=${xc})*(-1))
+  #variable ugx       atom  ${windmagx}*v_xbool
+  #variable ugy       atom  ${windmagy}*(-1)
+
+#Uniaxial convergent (linear) wind field
+  #variable windmaxx  equal 10
+  #variable windmaxy  equal 0
+  #variable windmx    equal -${windmaxx}/${lx}
+  #variable windmy    equal -${windmaxy}/${lx}
+
+  #variable windmagx  atom  ${windmx}*x+${windmaxx}
+  #variable windmagy  atom  ${windmy}*y+${windmaxy}
+
+  #variable ugx       atom  v_windmagx
+  #variable ugy       atom  v_windmagy
+
+#Uniaxial non-convergent
+  variable windmagx   equal 0.0
+  variable windmagy   equal -15
+
+  variable ugx        atom  v_windmagx
+  variable ugy        atom  v_windmagy
+
+###############################################
+# Force Calculation
+###############################################
+
+variable vmaga atom sqrt((v_ugx-vx)*(v_ugx-vx)+(v_ugy-vy)*(v_ugy-vy))
+variable vmago atom sqrt((-vx)*(-vx)+(-vy)*(-vy))
+
+variable	windfx   atom ${airDensity}*${windDragCoefficient}*v_vmaga*(v_ugx-vx)
+variable	windfx   atom 1.225*${windDragCoefficient}*v_vmaga*(v_ugx-vx)
+variable	windfx   atom 1.225*0.015*v_vmaga*(v_ugx-vx)
+variable	windfy   atom ${airDensity}*${windDragCoefficient}*v_vmaga*(v_ugy-vy)
+variable	windfy   atom 1.225*${windDragCoefficient}*v_vmaga*(v_ugy-vy)
+variable	windfy   atom 1.225*0.015*v_vmaga*(v_ugy-vy)
+variable	waterfx  atom ${waterDensity}*${oceanDragCoefficient}*v_vmago*(-vx)
+variable	waterfx  atom 1017*${oceanDragCoefficient}*v_vmago*(-vx)
+variable	waterfx  atom 1017*0.0045*v_vmago*(-vx)
+variable	waterfy  atom ${waterDensity}*${oceanDragCoefficient}*v_vmago*(-vy)
+variable	waterfy  atom 1017*${oceanDragCoefficient}*v_vmago*(-vy)
+variable	waterfy  atom 1017*0.0045*v_vmago*(-vy)
+
+variable	totfx    atom (v_windfx+v_waterfx)*v_area
+variable	totfy    atom (v_windfy+v_waterfy)*v_area
+
+###############################################
+# Vestigial
+###############################################
+
+# variable rot  equal 0.1
+# variable deltheta equal 2*PI*${rot}
+# variable ramp equal ramp(0,${deltheta})
+# variable kx equal 2*PI*${lx}
+
+###############################################
+# Computes and Property/atom variables
+###############################################
+
+compute     rad all property/atom radius
+variable    area atom PI*c_rad^2
+variable    velocity atom sqrt(vx*vx+vy*vy)
+compute     stress all stress/atom NULL
+variable    stressdet   atom c_stress[1]*c_stress[2]-2*c_stress[4]
+variable    axialstress atom c_stress[2]+c_stress[1]
+variable    shearstress atom sqrt(abs(v_axialstress^2-4*v_stressdet)) ## This may not be valid!!!!
+
+###############################################
+# Fixes and pair styles
+###############################################
+comm_style  tiled
+variable    tcol equal PI/sqrt(2*${kn}/${minmass}-${damp}^2/4.0)
+variable    tcol equal PI/sqrt(2*1000000/${minmass}-${damp}^2/4.0)
+variable    tcol equal PI/sqrt(2*1000000/11309733552.9233-${damp}^2/4.0)
+variable    tcol equal PI/sqrt(2*1000000/11309733552.9233-0^2/4.0)
+variable    dt equal ${tcol}*0.02
+variable    dt equal 236.244149185837*0.02
+timestep    ${dt}
+timestep    4.72488298371674
+
+pair_style	gran/hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1
+pair_style	gran/hooke 1000000 ${kt} ${damp} 0 ${coeffFric} 1
+pair_style	gran/hooke 1000000 500000 ${damp} 0 ${coeffFric} 1
+pair_style	gran/hooke 1000000 500000 0 0 ${coeffFric} 1
+pair_style	gran/hooke 1000000 500000 0 0 0.3 1
+pair_coeff  * *
+
+fix 1   all nve/sphere disc
+fix	2   all enforce2d
+fix	3   all addforce v_totfx v_totfy 0.0
+fix	4   all balance 10000 1.1 rcb weight neigh 1.0
+fix	wx  all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 xplane ${x0} ${x1}
+fix	wx  all wall/gran hooke 1000000 ${kt} ${damp} 0 ${coeffFric} 1 xplane ${x0} ${x1}
+fix	wx  all wall/gran hooke 1000000 500000 ${damp} 0 ${coeffFric} 1 xplane ${x0} ${x1}
+fix	wx  all wall/gran hooke 1000000 500000 0 0 ${coeffFric} 1 xplane ${x0} ${x1}
+fix	wx  all wall/gran hooke 1000000 500000 0 0 0.3 1 xplane ${x0} ${x1}
+fix	wx  all wall/gran hooke 1000000 500000 0 0 0.3 1 xplane 0 ${x1}
+fix	wx  all wall/gran hooke 1000000 500000 0 0 0.3 1 xplane 0 500000
+fix	wy  all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 yplane ${y0} ${y1}
+fix	wy  all wall/gran hooke 1000000 ${kt} ${damp} 0 ${coeffFric} 1 yplane ${y0} ${y1}
+fix	wy  all wall/gran hooke 1000000 500000 ${damp} 0 ${coeffFric} 1 yplane ${y0} ${y1}
+fix	wy  all wall/gran hooke 1000000 500000 0 0 ${coeffFric} 1 yplane ${y0} ${y1}
+fix	wy  all wall/gran hooke 1000000 500000 0 0 0.3 1 yplane ${y0} ${y1}
+fix	wy  all wall/gran hooke 1000000 500000 0 0 0.3 1 yplane 0 ${y1}
+fix	wy  all wall/gran hooke 1000000 500000 0 0 0.3 1 yplane 0 750000
+
+###############################################
+# Run settings
+###############################################
+
+variable      dumpfreq equal 100
+variable      logfreq equal 100
+
+variable      skin equal 0.3*${diam}
+variable      skin equal 0.3*4000
+neighbor      ${skin} bin
+neighbor      1200 bin
+
+comm_modify	  vel yes cutoff ${diam}
+comm_modify	  vel yes cutoff 4000
+
+thermo_style	custom step cpu atoms ke lx
+thermo_modify	flush yes lost warn
+thermo        ${logfreq}
+thermo        100
+
+dump 1        all custom ${dumpfreq} ../data/DUMP/gran_4.dump id type mass               radius x y z v_velocity v_axialstress v_shearstress
+dump 1        all custom 100 ../data/DUMP/gran_4.dump id type mass               radius x y z v_velocity v_axialstress v_shearstress
+
+run 100
+All restart file global fix info was re-assigned
+WARNING: Region properties for region fun are inconsistent with restart file, resetting its motion (../fix_wall_gran_region.cpp:126)
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 5200
+  ghost atom cutoff = 5200
+  binsize = 2600, bins = 193 289 4
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair gran/hooke, perpetual
+      attributes: half, newton on, size
+      pair build: half/size/bin/newton
+      stencil: half/bin/2d/newton
+      bin: standard
+WARNING: Balance weight neigh skipped b/c no list found (../imbalance_neigh.cpp:65)
+Per MPI rank memory allocation (min/avg/max) = 7.741 | 7.741 | 7.741 Mbytes
+Step CPU Atoms KinEng Lx 
+   54800            0     4650 1.8777736e+13       500000 
+   54900   0.39517593     4650 1.871601e+13       500000 
+Loop time of 0.395209 on 1 procs for 100 steps with 4650 atoms
+
+99.3% CPU use with 1 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.03011    | 0.03011    | 0.03011    |   0.0 |  7.62
+Neigh   | 0.00067806 | 0.00067806 | 0.00067806 |   0.0 |  0.17
+Comm    | 7.4148e-05 | 7.4148e-05 | 7.4148e-05 |   0.0 |  0.02
+Output  | 0.0094349  | 0.0094349  | 0.0094349  |   0.0 |  2.39
+Modify  | 0.35265    | 0.35265    | 0.35265    |   0.0 | 89.23
+Other   |            | 0.002261   |            |       |  0.57
+
+Nlocal:    4650 ave 4650 max 4650 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    0 ave 0 max 0 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    13046 ave 13046 max 13046 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 13046
+Ave neighs/atom = 2.80559
+Neighbor list builds = 1
+Dangerous builds = 0
+write_restart ../data/restart/restart.gran_4.mpiio
+WARNING: Region properties for region fun are inconsistent with restart file, resetting its motion (../fix_wall_gran_region.cpp:126)
+Total wall time: 0:00:00
