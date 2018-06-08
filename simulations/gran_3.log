@@ -1,0 +1,62 @@
+atom_style  sphere
+dimension   2
+units       si
+
+###############################################
+# Size, contact parameters
+###############################################
+
+variable    kn equal 1e6
+variable    damp equal 0.0
+variable    coeffFric equal 0.3
+variable    kt equal 0.5*${kn}
+variable    kt equal 0.5*1000000
+variable    rad equal 5000
+
+variable    omega equal 0.5*10^(-3)
+variable    lambda equal 8.0*10^5
+
+variable    airDensity equal 1.225
+variable    waterDensity equal 1017.0
+variable    windDragCoefficient equal 0.015
+variable    oceanDragCoefficient equal 0.0045
+
+###############################################
+# Geometry-related parameters
+###############################################
+
+variable    lx equal  500000
+variable    ly equal  ${lx}*1.5
+variable    ly equal  500000*1.5
+variable    ly2 equal ${lx}
+variable    ly2 equal 500000
+
+###############################################
+# Create box
+###############################################
+boundary    f f p
+
+variable    x0 equal 0
+variable    x1 equal ${lx}
+variable    x1 equal 500000
+variable    y0 equal 0
+variable    y1 equal ${ly}
+variable    y1 equal 750000
+region      boxreg block ${x0} ${x1} ${y0} ${y1} -${rad} ${rad} units box
+region      boxreg block 0 ${x1} ${y0} ${y1} -${rad} ${rad} units box
+region      boxreg block 0 500000 ${y0} ${y1} -${rad} ${rad} units box
+region      boxreg block 0 500000 0 ${y1} -${rad} ${rad} units box
+region      boxreg block 0 500000 0 750000 -${rad} ${rad} units box
+region      boxreg block 0 500000 0 750000 -5000 ${rad} units box
+region      boxreg block 0 500000 0 750000 -5000 5000 units box
+create_box  1 boxreg
+Created orthogonal box = (0 0 -5000) to (500000 750000 5000)
+  1 by 1 by 1 MPI processor grid
+
+###############################################
+# Simulation Initialization Includes
+###############################################
+
+include     in.include.atoms.grid
+ERROR on proc 0: Cannot open input script in.include.atoms.grid (../input.cpp:1041)
+Last command: include     in.include.atoms.grid
