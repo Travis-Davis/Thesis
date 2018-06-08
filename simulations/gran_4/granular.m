@@ -1,7 +1,8 @@
-clear all
+clear clear all
 clc
 
 %% Initialize the Run
+platform = 'im'; % im or mb
 % Declare .in file to be referenced:
 input = 'gran_4';
 dump  = strcat(input,'.DUMP');
@@ -11,8 +12,8 @@ val   = 10; % number of dumped parameters
 % Ice Physical Constants:
 dens = 900;
 mu   = 0.6;
-sigt = 1e10;
-sigc = -1e12;
+sigt = 1e11;
+sigc = -3e12;
 
 % Model Dynamics:
 % Note: Ensure these are synched with .in file
@@ -32,7 +33,7 @@ y1   = x1*1.5;
 % Choose Initial Floe Distribution:
 %   1 = Constant Radius Lattice
 %   2 = Power Law (radius) Uniform Random (spatial)
-distribution = 1;
+distribution = 2;
 
 % Floe Radius Parameters:
 % Note: Rmin and Rmax only needed for non-constant radius distributions
@@ -58,7 +59,7 @@ nrun = floor((T*3600)/(100*timestep));
 n = 1;
 while n <= nrun+1
     if n == 1
-        sysin = strcat('../lmp_mpi_mb -in in.i.',input);
+        sysin = strcat('../lmp_mpi_',platform,' -in in.i.',input);
         system(sysin)
         gran2vtk(input,n);
         clear sysin
@@ -90,7 +91,7 @@ while n <= nrun+1
             end
         end
         
-        sysin = strcat('../lmp_mpi_mb -in in.r.',input);
+        sysin = strcat('../lmp_mpi_',platform,' -in in.r.',input);
         system(sysin)
         n = n+1;
         clear sysin

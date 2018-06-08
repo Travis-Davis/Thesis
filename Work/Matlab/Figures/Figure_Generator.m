@@ -2,7 +2,7 @@ clear all
 clc
 
 %% Retrieve Data
-load('NewtonianViscousRheology')
+load('NewtonianViscousRheology.mat')
 newt1 = sig1plot;
 newt2 = sig2plot;
 

@@ -42,159 +42,43 @@ variable    y1 equal 750000
 include     in.include.atoms.update
 variable minmass equal 11309733552.923256
 variable diam equal 4000.000000
-set atom 4160 diameter 81.102600
+set atom 250 diameter 1913.184000
   1 settings made for diameter
-set atom 187 diameter 72.992340
+set atom 3743 diameter 2916.000000
   1 settings made for diameter
-set atom 819 diameter 354.517200
+set atom 1267 diameter 2916.000000
   1 settings made for diameter
-set atom 567 diameter 287.159400
+set atom 3191 diameter 3600.000000
   1 settings made for diameter
-set atom 3186 diameter 2916.000000
+set atom 4355 diameter 2916.000000
   1 settings made for diameter
-set atom 3675 diameter 486.306000
+set atom 4051 diameter 2916.000000
   1 settings made for diameter
-set atom 442 diameter 437.675400
+set atom 3131 diameter 3600.000000
   1 settings made for diameter
-set atom 1013 diameter 319.066200
+set atom 4237 diameter 2916.000000
   1 settings made for diameter
-set atom 3312 diameter 2361.960000
+set atom 2823 diameter 2916.000000
   1 settings made for diameter
-set atom 4408 diameter 287.159400
+set atom 4177 diameter 2916.000000
   1 settings made for diameter
-set atom 194 diameter 258.444000
+set atom 4178 diameter 2916.000000
   1 settings made for diameter
-set atom 701 diameter 1016.744400
+set atom 1272 diameter 3240.000000
   1 settings made for diameter
-set atom 383 diameter 667.085400
+set atom 2701 diameter 3240.000000
   1 settings made for diameter
-set atom 952 diameter 1016.744400
+set atom 962 diameter 3600.000000
   1 settings made for diameter
-set atom 4109 diameter 319.066200
+set atom 4122 diameter 3240.000000
   1 settings made for diameter
-set atom 259 diameter 540.340200
+set atom 217 diameter 3600.000000
   1 settings made for diameter
-set atom 3252 diameter 1721.865600
+set atom 3703 diameter 2624.400000
   1 settings made for diameter
-set atom 3375 diameter 1913.184000
+set atom 2714 diameter 3600.000000
   1 settings made for diameter
-set atom 3681 diameter 1129.716000
-  1 settings made for diameter
-set atom 451 diameter 486.306000
-  1 settings made for diameter
-set atom 4173 diameter 1129.716000
-  1 settings made for diameter
-set atom 955 diameter 741.205800
-  1 settings made for diameter
-set atom 200 diameter 486.306000
-  1 settings made for diameter
-set atom 770 diameter 915.069600
-  1 settings made for diameter
-set atom 72 diameter 667.085400
-  1 settings made for diameter
-set atom 71 diameter 188.406000
-  1 settings made for diameter
-set atom 959 diameter 2624.400000
-  1 settings made for diameter
-set atom 1084 diameter 1721.865600
-  1 settings made for diameter
-set atom 1893 diameter 3600.000000
-  1 settings made for diameter
-set atom 3810 diameter 540.340200
-  1 settings made for diameter
-set atom 3809 diameter 2624.400000
-  1 settings made for diameter
-set atom 1149 diameter 1394.712000
-  1 settings made for diameter
-set atom 3566 diameter 1721.865600
-  1 settings made for diameter
-set atom 3444 diameter 1394.712000
-  1 settings made for diameter
-set atom 143 diameter 1255.240800
-  1 settings made for diameter
-set atom 1647 diameter 2624.400000
-  1 settings made for diameter
-set atom 3997 diameter 1255.240800
-  1 settings made for diameter
-set atom 4059 diameter 3240.000000
-  1 settings made for diameter
-set atom 523 diameter 1721.865600
-  1 settings made for diameter
-set atom 3691 diameter 1255.240800
-  1 settings made for diameter
-set atom 400 diameter 741.205800
-  1 settings made for diameter
-set atom 779 diameter 915.069600
-  1 settings made for diameter
-set atom 1215 diameter 2624.400000
-  1 settings made for diameter
-set atom 3755 diameter 2125.764000
-  1 settings made for diameter
-set atom 25 diameter 319.066200
-  1 settings made for diameter
-set atom 469 diameter 2624.400000
-  1 settings made for diameter
-set atom 781 diameter 2916.000000
-  1 settings made for diameter
-set atom 594 diameter 1913.184000
-  1 settings made for diameter
-set atom 782 diameter 2125.764000
-  1 settings made for diameter
-set atom 1092 diameter 2916.000000
-  1 settings made for diameter
-set atom 3448 diameter 2624.400000
-  1 settings made for diameter
-set atom 4492 diameter 1016.744400
-  1 settings made for diameter
-set atom 4554 diameter 667.085400
-  1 settings made for diameter
-set atom 92 diameter 1016.744400
-  1 settings made for diameter
-set atom 89 diameter 354.517200
-  1 settings made for diameter
-set atom 345 diameter 915.069600
-  1 settings made for diameter
-set atom 3573 diameter 2916.000000
-  1 settings made for diameter
-set atom 3635 diameter 3240.000000
-  1 settings made for diameter
-set atom 4555 diameter 823.563000
-  1 settings made for diameter
-set atom 470 diameter 1913.184000
-  1 settings made for diameter
-set atom 4556 diameter 1255.240800
-  1 settings made for diameter
-set atom 4438 diameter 741.205800
-  1 settings made for diameter
-set atom 847 diameter 3240.000000
-  1 settings made for diameter
-set atom 1467 diameter 3600.000000
-  1 settings made for diameter
-set atom 4317 diameter 1913.184000
-  1 settings made for diameter
-set atom 4257 diameter 2125.764000
-  1 settings made for diameter
-set atom 100 diameter 1913.184000
-  1 settings made for diameter
-set atom 4380 diameter 1721.865600
-  1 settings made for diameter
-set atom 103 diameter 2125.764000
-  1 settings made for diameter
-set atom 102 diameter 2125.764000
-  1 settings made for diameter
-set atom 1468 diameter 3600.000000
-  1 settings made for diameter
-set atom 4629 diameter 1913.184000
-  1 settings made for diameter
-set atom 104 diameter 2361.960000
-  1 settings made for diameter
-set atom 105 diameter 2361.960000
-  1 settings made for diameter
-set atom 167 diameter 2916.000000
-  1 settings made for diameter
-set atom 1469 diameter 3600.000000
-  1 settings made for diameter
-set atom 4321 diameter 3240.000000
+set atom 48 diameter 3600.000000
   1 settings made for diameter
 include     in.include.funnel
 ###################
@@ -464,31 +348,31 @@ Neighbor list info ...
 WARNING: Balance weight neigh skipped b/c no list found (../imbalance_neigh.cpp:65)
 Per MPI rank memory allocation (min/avg/max) = 7.741 | 7.741 | 7.741 Mbytes
 Step CPU Atoms KinEng Lx 
-   54800            0     4650 1.8777736e+13       500000 
-   54900   0.39517593     4650 1.871601e+13       500000 
-Loop time of 0.395209 on 1 procs for 100 steps with 4650 atoms
+   54800            0     4650 1.6758655e+13       500000 
+   54900   0.26615454     4650 1.6833146e+13       500000 
+Loop time of 0.266167 on 1 procs for 100 steps with 4650 atoms
 
-99.3% CPU use with 1 MPI tasks x no OpenMP threads
+99.7% CPU use with 1 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.03011    | 0.03011    | 0.03011    |   0.0 |  7.62
-Neigh   | 0.00067806 | 0.00067806 | 0.00067806 |   0.0 |  0.17
-Comm    | 7.4148e-05 | 7.4148e-05 | 7.4148e-05 |   0.0 |  0.02
-Output  | 0.0094349  | 0.0094349  | 0.0094349  |   0.0 |  2.39
-Modify  | 0.35265    | 0.35265    | 0.35265    |   0.0 | 89.23
-Other   |            | 0.002261   |            |       |  0.57
+Pair    | 0.038538   | 0.038538   | 0.038538   |   0.0 | 14.48
+Neigh   | 0.00049515 | 0.00049515 | 0.00049515 |   0.0 |  0.19
+Comm    | 3.3645e-05 | 3.3645e-05 | 3.3645e-05 |   0.0 |  0.01
+Output  | 0.0067871  | 0.0067871  | 0.0067871  |   0.0 |  2.55
+Modify  | 0.21928    | 0.21928    | 0.21928    |   0.0 | 82.38
+Other   |            | 0.001034   |            |       |  0.39
 
 Nlocal:    4650 ave 4650 max 4650 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 Nghost:    0 ave 0 max 0 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    13046 ave 13046 max 13046 min
+Neighs:    13335 ave 13335 max 13335 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 13046
-Ave neighs/atom = 2.80559
+Total # of neighbors = 13335
+Ave neighs/atom = 2.86774
 Neighbor list builds = 1
 Dangerous builds = 0
 write_restart ../data/restart/restart.gran_4.mpiio
