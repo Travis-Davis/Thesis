@@ -61,8 +61,8 @@ variable    y2 equal -${ly}/4
 variable    y3 equal ${ly}/4
 variable    z0 equal -${lz}
 variable    z1 equal ${lz}
-variable    z2 equal -${diam}/4
-variable    z3 equal ${diam}/4
+variable    z2 equal -${diam}/5
+variable    z3 equal ${diam}/5
 
 region      boxreg block ${x0} ${x1} ${y0} ${y1} ${z0} ${z1} units box
 create_box  1 boxreg
