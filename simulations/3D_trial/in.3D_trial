@@ -4,14 +4,13 @@
 
 log         3D_trial.log
 atom_style  sphere
-#dimension   3
 units       si
 
 ###############################################
 # Size, contact parameters
 ###############################################
 
-variable    diam equal 1
+variable    diam equal 4
 variable    rad equal ${diam}*0.5
 
 variable    kn equal 1e6
@@ -31,40 +30,43 @@ variable    waterDensity equal 1017.0
 # Geometry-related parameters
 ###############################################
 
-variable    lx equal  ${diam}*2
+variable    lx equal  200
 variable    ly equal  ${lx}
 variable    lz equal  ${lx}
 
 ###############################################
 # Create box
 ###############################################
-boundary    f f p
+boundary    f f f
 
 variable    x0 equal -${lx}
 variable    x1 equal ${lx}
+variable    x2 equal -${lx}/4
+variable    x3 equal ${lx}/4
 variable    y0 equal -${ly}
 variable    y1 equal ${ly}
+variable    y2 equal -${ly}/4
+variable    y3 equal ${ly}/4
 variable    z0 equal -${lz}
 variable    z1 equal ${lz}
+variable    z2 equal -${diam}
+variable    z3 equal ${diam}
 
 region      boxreg block ${x0} ${x1} ${y0} ${y1} ${z0} ${z1} units box
 create_box  1 boxreg
 
-lattice	    sc ${rad} origin 0.5 0.5 0.5
-region      element block ${x0} ${x1} ${y0} ${y1} -${diam} ${diam} units box
+lattice     diamond ${diam}
+region      element block ${x2} ${x3} ${y2} ${y3} ${z2} ${z3} units box
 
 ###############################################
 # Create atoms
 ###############################################
 
-create_atoms  1 single 0 0 -1
-set atom 1 diameter ${diam}
-set atom 1 density ${dens}
-set atom 1 mass ${minmass}
-#create_atoms  1 region element
-#set group all diameter ${diam}
-#set group all density  ${dens}
-#set group all mass     ${minmass}
+#create_atoms  1 single .1 .1 2
+create_atoms  1 region element
+set group all diameter ${diam}
+set group all density  ${dens}
+set group all mass     ${minmass}
 
 ###############################################
 # Computes and Property/atom variables
@@ -77,11 +79,14 @@ variable    velocity atom sqrt(vx*vx+vy*vy+vz*vz)
 # Force Calculations
 ###############################################
 
-variable h atom (z<c_rad)*((z>c_rad)*(-z)+(z<=-c_rad)*(2*c_rad))
-variable Vdisp atom PI*(c_rad*v_h^2-1/3*v_h^3)
-variable Fb atom ${waterDensity}*${gravity}*v_Vdisp
-variable zdamp atom -vz
-variable Fztot atom v_Fb+v_zdamp
+variable Vtot  atom 4/3*PI*c_rad^3
+variable V1    atom (z<-c_rad)*v_Vtot
+variable V2    atom (z>=-c_rad)*(z<=c_rad)*(1/2*v_Vtot+PI*(z^3/3-c_rad^2*z))
+variable Vdisp atom v_V1+v_V2
+variable Fb    atom ${waterDensity}*${gravity}*v_Vdisp
+variable Fg    atom ${gravity}*mass
+variable Fd    atom (z<c_rad)*(-vz*10000)
+variable Fztot atom v_Fb-v_Fg+v_Fd
 
 ###############################################
 # Fixes and pair styles
@@ -89,22 +94,23 @@ variable Fztot atom v_Fb+v_zdamp
 comm_style  tiled
 variable    tcol equal PI/sqrt(2*${kn}/${minmass}-${damp}^2/4.0)
 variable    dt equal ${tcol}*0.02
-timestep    ${dt}
+#timestep   ${dt}
+timestep    1e-2
 
 pair_style	gran/hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1
 pair_coeff  * *
 
 fix		1 all  nve/sphere
-fix   2 all  gravity 9.81 vector 0 0 -1
-fix   3 all  addforce 0 0 v_Fztot
+fix   3 all  addforce 500 0 v_Fztot
 fix		wx all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 xplane ${x0} ${x1}
 fix		wy all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 yplane ${y0} ${y1}
+fix		wz all wall/gran hooke ${kn} ${kt} ${damp} 0 ${coeffFric} 1 zplane ${z0} ${z1}
 
 ###############################################
 # Run settings
 ###############################################
 
-variable      dumpfreq equal 1
+variable      dumpfreq equal 10
 variable      logfreq equal 100
 
 variable      skin equal 0.3*${diam}
@@ -117,6 +123,6 @@ thermo_modify	flush yes lost warn
 thermo        ${logfreq}
 
 dump 1        all custom ${dumpfreq} ../data/DUMP/3D_trial.dump id type mass &
-              radius x y z v_velocity
+              radius x y z vz fz v_Fb v_Vdisp
 
-run		50000
+run		100000

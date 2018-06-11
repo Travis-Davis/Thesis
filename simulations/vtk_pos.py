@@ -27,6 +27,10 @@ def write_frame_vtk(particles, basename, istep):
     f.write("LOOKUP_TABLE default\n")
     for p in particles:
         f.write(str(p.rad)+" ")
+    f.write("SCALARS Velocity float 1\n")
+    f.write("LOOKUP_TABLE default\n")
+    for p in particles:
+        f.write(str(p.vel)+" ")
     f.close()
 
 def main():
@@ -55,12 +59,12 @@ def main():
 
     #Dump column indices corresponding to x, y, diameter
     # (can easily add more per-particle values, see p.x,p.y,p.rad line below)
-    xcol = 5
-    ycol = 6
-    zcol = 7
-    mcol = 3
-    rcol = 4
-    vcol = 8
+    rcol = 3
+    xcol = 4
+    ycol = 5
+    zcol = 6
+    vcol = 7
+
 
     #Quick and dirty: assumes entire dump file fits into memory.
     #Eventually do this via buffering scheme
@@ -97,7 +101,7 @@ def main():
                     if not atomline:
                         break
                     p=Particle()
-                    p.x,p.y,p.z,p.rad = np.array(atomline.split(" "))[[xcol,ycol,zcol,rcol]].astype(float)
+                    p.x,p.y,p.z,p.rad,p.vel = np.array(atomline.split(" "))[[xcol,ycol,zcol,rcol,vcol]].astype(float)
                     particles.append(p)
                 write_frame_vtk(particles, basename, istep)
                 break

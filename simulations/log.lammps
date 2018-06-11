@@ -3,4 +3,4 @@ LAMMPS (17 Jan 2018)
 # General settings
 ###############################################
 
-log         gran_4.log
+log         3D_trial.log

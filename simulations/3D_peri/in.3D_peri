@@ -1,0 +1,136 @@
+###############################################
+# General settings
+###############################################
+
+log         3D_trial.log
+atom_style  peri
+units       si
+
+###############################################
+# Size, contact parameters
+###############################################
+
+#Elastic-Plastic Parameters: K G s00 alpha YieldStress
+variable    K equal 1000 #Bulk Modulus
+variable    G equal 1000 #Shear Modulus
+variable    hor equal 100 #Horizon
+variable    s00 equal 2000 #Bond Constant
+variable    alpha equal 1e6 #Bond Constant
+variable    Yield equal 1e6 #Yield Stress
+
+#Lattice:
+variable    diam equal 4
+variable    rad equal ${diam}*0.5
+variable    vol equal 4/3*PI*${rad}^3
+
+variable    kn equal 1e6
+variable    damp equal 0.0
+variable    coeffFric equal .3
+variable    kt equal 0.5*${kn}
+variable    dens equal 900
+variable    minmass equal PI*${rad}^3*${dens}*4/3
+variable    gravity equal 9.810
+
+variable    omega equal 0.5*10^(-3)
+variable    lambda equal 8.0*10^5
+
+variable    waterDensity equal 1017.0
+
+###############################################
+# Geometry-related parameters
+###############################################
+
+variable    lx equal  50
+variable    ly equal  ${lx}
+variable    lz equal  ${lx}
+
+###############################################
+# Create box
+###############################################
+
+boundary    f f f
+atom_modify	map array
+
+variable    x0 equal -${lx}
+variable    x1 equal ${lx}
+variable    x2 equal -${lx}/4
+variable    x3 equal ${lx}/4
+variable    y0 equal -${ly}
+variable    y1 equal ${ly}
+variable    y2 equal -${ly}/4
+variable    y3 equal ${ly}/4
+variable    z0 equal -${lz}
+variable    z1 equal ${lz}
+variable    z2 equal -${diam}/4
+variable    z3 equal ${diam}/4
+
+region      boxreg block ${x0} ${x1} ${y0} ${y1} ${z0} ${z1} units box
+create_box  1 boxreg
+
+lattice     diamond ${diam}
+region      element block ${x2} ${x1} ${y2} ${y3} ${z2} ${z3} units box
+
+###############################################
+# Create atoms
+###############################################
+
+#create_atoms  1 single .1 .1 1
+create_atoms  1 region element
+set group all volume   ${vol}
+set group all density  ${dens}
+set group all mass     ${minmass}
+
+###############################################
+# Computes and Property/atom variables
+###############################################
+
+variable    velocity atom sqrt(vx*vx+vy*vy+vz*vz)
+variable    R        atom (3/4*mass/(${dens}*PI))^(1/3)
+
+###############################################
+# Force Calculations
+###############################################
+
+variable V1    atom (z<-${rad})*${vol}
+variable V2    atom (z>=-${rad})*(z<=${rad})*(1/2*${vol}+PI*(z^3/3-${rad}^2*z))
+variable Vdisp atom v_V1+v_V2
+variable Fb    atom ${waterDensity}*${gravity}*v_Vdisp
+variable Fg    atom ${gravity}*mass
+variable Fd    atom (z<${rad})*(-vz*0)
+variable Fztot atom v_Fb-v_Fg+v_Fd
+
+###############################################
+# Fixes and pair styles
+###############################################
+
+comm_style    tiled
+timestep      1e-3
+
+pair_style    peri/eps
+pair_coeff    * *      ${K} ${G} ${hor} ${s00} ${alpha} ${Yield}
+
+fix           1 all    nve
+fix           2 all    addforce 0 0 v_Fztot
+
+###############################################
+# Run settings
+###############################################
+
+variable      dumpfreq equal 10
+variable      logfreq equal 100
+
+variable      skin equal 0.3*${diam}
+neighbor      ${skin} bin
+
+comm_modify	  vel yes cutoff ${diam}
+
+thermo_style	custom step cpu atoms ke lx
+thermo_modify	flush yes lost warn
+thermo        ${logfreq}
+
+#dump 1        all custom ${dumpfreq} ../data/DUMP/3D_peri.dump id type volume &
+              mass x y z v_velocity
+
+dump 2        all custom ${dumpfreq} ../data/DUMP/3D_peri.dump id type x y z v_R
+
+run		50000
