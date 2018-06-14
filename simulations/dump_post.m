@@ -1,8 +1,8 @@
 clear all
 clc
 
-pos_end = length(fileread('data/DUMP/3D_trial.DUMP'));
-input = fopen('data/DUMP/3D_trial.DUMP');
+pos_end = length(fileread('data/DUMP/3D_peri.DUMP'));
+input = fopen('data/DUMP/3D_peri.DUMP');
 
 pos = ftell(input);
 i=1;

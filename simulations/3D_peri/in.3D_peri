@@ -19,8 +19,9 @@ variable    alpha equal 1e6 #Bond Constant
 variable    Yield equal 1e6 #Yield Stress
 
 #Lattice:
-variable    diam equal 4
-variable    rad equal ${diam}*0.5
+include     in.trial
+#variable    diam equal 4
+#variable    rad equal ${diam}*0.5
 variable    vol equal 4/3*PI*${rad}^3
 
 variable    kn equal 1e6
@@ -61,21 +62,23 @@ variable    y2 equal -${ly}/4
 variable    y3 equal ${ly}/4
 variable    z0 equal -${lz}
 variable    z1 equal ${lz}
-variable    z2 equal -${diam}/5
-variable    z3 equal ${diam}/5
+variable    zeq equal 0.577461425395942*${rad}
+variable    z2 equal -${diam}/5-${zeq}
+variable    z3 equal ${diam}/5-${zeq}
 
 region      boxreg block ${x0} ${x1} ${y0} ${y1} ${z0} ${z1} units box
 create_box  1 boxreg
 
-lattice     diamond ${diam}
+lattice     sc ${rad}
 region      element block ${x2} ${x1} ${y2} ${y3} ${z2} ${z3} units box
 
 ###############################################
 # Create atoms
 ###############################################
 
-#create_atoms  1 single .1 .1 1
-create_atoms  1 region element
+include in.include.equilibrium
+#create_atoms  1 single 0 0 -${zeq}
+#create_atoms  1 region element
 set group all volume   ${vol}
 set group all density  ${dens}
 set group all mass     ${minmass}
@@ -91,9 +94,15 @@ variable    R        atom (3/4*mass/(${dens}*PI))^(1/3)
 # Force Calculations
 ###############################################
 
-variable V1    atom (z<-${rad})*${vol}
-variable V2    atom (z>=-${rad})*(z<=${rad})*(1/2*${vol}+PI*(z^3/3-${rad}^2*z))
-variable Vdisp atom v_V1+v_V2
+variable h     atom (z<-${rad})*(2*${rad}+z)+(z>=${rad})*(${rad}+z)
+variable Vwed  atom 1/3*PI*v_h^2*(3*${rad}-v_h)
+
+variable V1    atom (z<-${rad})*(z>=-2*${rad})*(${vol}-v_Vwed)
+variable V2    atom (z<0)*(z>=-${rad})*(v_Vwed)
+variable V3    atom (z<-2*${rad})*${vol}
+
+variable Vdisp atom v_V1+v_V2+v_V3
+
 variable Fb    atom ${waterDensity}*${gravity}*v_Vdisp
 variable Fg    atom ${gravity}*mass
 variable Fd    atom (z<${rad})*(-vz*0)
@@ -104,7 +113,7 @@ variable Fztot atom v_Fb-v_Fg+v_Fd
 ###############################################
 
 comm_style    tiled
-timestep      1e-3
+timestep      2e-4
 
 pair_style    peri/eps
 pair_coeff    * *      ${K} ${G} ${hor} ${s00} ${alpha} ${Yield}
@@ -128,6 +137,7 @@ thermo_style	custom step cpu atoms ke lx
 thermo_modify	flush yes lost warn
 thermo        ${logfreq}
 
+run 0
 #dump 1        all custom ${dumpfreq} ../data/DUMP/3D_peri.dump id type volume &
               mass x y z v_velocity
 
