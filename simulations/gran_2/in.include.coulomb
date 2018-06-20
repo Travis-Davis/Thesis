@@ -1,9 +1,0 @@
-##################################
-# Coulombic Failure Criteria     #
-##################################
-
-# Variables available from input:
-#   v_thickness
-
-#variable sigc equal 1e6
-#variable sigs equal 1e6

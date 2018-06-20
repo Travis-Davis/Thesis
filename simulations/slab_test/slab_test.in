@@ -2,7 +2,7 @@
 # General settings
 ###############################################
 
-log         3D_trial.log
+log         slab_test.log
 atom_style  peri
 units       si
 
@@ -11,32 +11,24 @@ units       si
 ###############################################
 
 #Elastic-Plastic Parameters: K G s00 alpha YieldStress
-variable    K equal 1e22 #Bulk Modulus
-variable    G equal 1e22 #Shear Modulus
-variable    hor equal 100 #Horizon
+variable    K equal 5e6 #Bulk Modulus
+variable    G equal 5e6 #Shear Modulus
+variable    hor equal 2 #Horizon
 variable    s00 equal 2000 #Bond Constant
 variable    alpha equal 1e6 #Bond Constant
 variable    Yield equal 1e6 #Yield Stress
-
-#Lattice:
-include     in.trial
-#variable    diam equal 4
-#variable    rad equal ${diam}*0.5
-variable    vol equal 4/3*PI*${rad}^3
 
 variable    kn equal 1e6
 variable    damp equal 0.0
 variable    coeffFric equal .3
 variable    kt equal 0.5*${kn}
 variable    dens equal 900
-variable    minmass equal PI*${rad}^3*${dens}*4/3
 variable    gravity equal 9.810
 
 variable    omega equal 0.5*10^(-3)
 variable    lambda equal 8.0*10^5
 
 variable    waterDensity equal 1017.0
-variable    CD equal 10
 
 ###############################################
 # Geometry-related parameters
@@ -55,34 +47,19 @@ atom_modify	map array
 
 variable    x0 equal -${lx}
 variable    x1 equal ${lx}
-variable    x2 equal -${lx}/4
-variable    x3 equal ${lx}/4
 variable    y0 equal -${ly}
 variable    y1 equal ${ly}
-variable    y2 equal -${ly}/4
-variable    y3 equal ${ly}/4
 variable    z0 equal -${lz}
 variable    z1 equal ${lz}
-variable    zeq equal 0.577461425395942*${rad}
-variable    z2 equal -${diam}/5-${zeq}
-variable    z3 equal ${diam}/5-${zeq}
 
 region      boxreg block ${x0} ${x1} ${y0} ${y1} ${z0} ${z1} units box
 create_box  1 boxreg
-
-#lattice     sc ${rad}
-#region      element block ${x2} ${x1} ${y2} ${y3} ${z2} ${z3} units box
 
 ###############################################
 # Create atoms
 ###############################################
 
-include in.include.equilibrium
-#create_atoms  1 single 0 0 -${zeq}
-#create_atoms  1 region element
-set group all volume   ${vol}
-set group all density  ${dens}
-set group all mass     ${minmass}
+include atom.include
 
 ###############################################
 # Computes and Property/atom variables
@@ -95,6 +72,7 @@ variable    R        atom (3/4*mass/(${dens}*PI))^(1/3)
 # Force Calculations
 ###############################################
 
+# Buoyancy calculation (need displaced volume):
 variable h     atom (z<-${rad})*(2*${rad}+z)+(z>=${rad})*(${rad}+z)
 variable Vwed  atom 1/3*PI*v_h^2*(3*${rad}-v_h)
 
@@ -104,23 +82,29 @@ variable V3    atom (z<-2*${rad})*${vol}
 
 variable Vdisp atom v_V1+v_V2+v_V3
 
+# Non-Contact Forces (not handled through pair style): Buoyancy, Gravity, Drag
 variable Fb    atom ${waterDensity}*${gravity}*v_Vdisp
 variable Fg    atom ${gravity}*mass
-variable Fd    atom (z<${rad})*(0.5*${CD}*${waterDensity}*PI*v_R^2*vz^2)
-variable Fztot atom v_Fb-v_Fg+(-(vz>=0)+(vz<0))*v_Fd
+variable Fd    atom (z<${rad})*(-vz*0)
+variable Fztot atom v_Fb-v_Fg+v_Fd
 
 ###############################################
 # Fixes and pair styles
 ###############################################
 
 comm_style    tiled
-timestep      2e-4
+timestep      0.0001
 
-pair_style    peri/eps
-pair_coeff    * *      ${K} ${G} ${hor} ${s00} ${alpha} ${Yield}
+pair_style    peri/pmb
+pair_coeff    * *      1.6863e4 1 1 0.25
+
+variable x2 equal ${x0}*3/4
+variable x3 equal ${x1}*3/4
 
 fix           1 all    nve
 fix           2 all    addforce 0 0 v_Fztot
+fix           3 all    indent 10 plane x ${x2} hi
+fix           4 all    indent 10 plane x ${x3} lo
 
 ###############################################
 # Run settings
@@ -138,10 +122,8 @@ thermo_style	custom step cpu atoms ke lx
 thermo_modify	flush yes lost warn
 thermo        ${logfreq}
 
-run 0
-#dump 1        all custom ${dumpfreq} ../data/DUMP/3D_peri.dump id type volume &
-              mass x y z v_velocity
+run  0
 
-dump 2        all custom ${dumpfreq} ../data/DUMP/3D_peri.dump id type x y z v_R
+dump 1        all custom ${dumpfreq} ../data/DUMP/slab_test.dump id type x y z v_R
 
-run		100000
+run	 50000

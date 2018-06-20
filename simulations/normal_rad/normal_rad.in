@@ -1,0 +1,117 @@
+###############################################
+# General settings
+###############################################
+
+log         normal_rad.log
+atom_style  peri
+units       si
+
+###############################################
+# Physical Constants
+###############################################
+
+include constant.include
+
+###############################################
+# Geometry-related parameters
+###############################################
+
+include simbox.include
+
+###############################################
+# Create atoms
+###############################################
+
+include atom.include
+
+###############################################
+# Computes and Property/atom variables
+###############################################
+
+variable    velocity atom sqrt(vx*vx+vy*vy+vz*vz)
+variable    R        atom (3/4*mass/(${dens}*PI))^(1/3)
+variable    vol      atom mass/${dens}
+variable    area     atom PI*(v_R)^2
+
+###############################################
+# Force Calculations - vertical
+###############################################
+
+# Buoyancy calculation (need displaced volume):
+variable h     atom (z<-v_R)*(2*v_R+z)+(z>=v_R)*(v_R+z)
+variable Vwed  atom 1/3*PI*v_h^2*(3*v_R-v_h)
+
+variable V1    atom (z<-v_R)*(z>=-2*v_R)*(v_vol-v_Vwed)
+variable V2    atom (z<0)*(z>=-v_R)*(v_Vwed)
+variable V3    atom (z<-2*v_R)*v_vol
+
+variable Vdisp atom v_V1+v_V2+v_V3
+
+# Non-Contact Forces (not handled through pair style): Buoyancy, Gravity, Drag
+variable Fb    atom ${waterDensity}*${gravity}*v_Vdisp
+variable Fg    atom ${gravity}*mass
+variable Fd    atom (z<v_R)*((vz<=0)-(vz>0))*(1/2*${Cdo}*${waterDensity}*v_area*vz^2)
+variable Fztot atom v_Fb-v_Fg+v_Fd
+
+###############################################
+# Force Calculations - horizontal
+###############################################
+
+variable windmagx  equal 20
+variable windmagy  equal 0
+variable xc        equal 0.5*(${x1}-${x0})
+variable knumx     equal PI/${xc} # One COS peak in wind field
+variable rot       equal 0
+variable deltheta  equal 2*PI*${rot}
+variable angramp   atom  ramp(0,${deltheta})
+variable wper      atom  cos(${knumx}*(${xc}-x)+v_angramp)
+
+variable xbool     atom  v_wper*((x<${xc})+(x>=${xc})*(-1))
+variable ugx       atom  ${windmagx}*v_xbool
+variable ugy       atom  ${windmagy}*(-1)
+
+variable vmaga     atom  sqrt((v_ugx-vx)*(v_ugx-vx)+(v_ugy-vy)*(v_ugy-vy))
+variable vmago     atom  sqrt((-vx)*(-vx)+(-vy)*(-vy))
+
+variable	windfx   atom  ${airDensity}*${Cdw}*v_vmaga*(v_ugx-vx)
+variable	windfy   atom  ${airDensity}*${Cdw}*v_vmaga*(v_ugy-vy)
+variable	waterfx  atom  ${waterDensity}*${Cdo}*v_vmago*(-vx)
+variable	waterfy  atom  ${waterDensity}*${Cdo}*v_vmago*(-vy)
+
+variable	Fxtot    atom  (v_windfx+v_waterfx)*v_area
+variable	Fytot    atom  (v_windfy+v_waterfy)*v_area
+
+###############################################
+# Fixes and pair styles
+###############################################
+
+comm_style    tiled
+timestep      0.001
+
+pair_style    peri/pmb
+pair_coeff    * * ${c} ${hor} ${s00} ${alpha}
+
+fix           1 all    nve
+fix           2 all    addforce v_Fxtot v_Fytot v_Fztot
+
+###############################################
+# Run settings
+###############################################
+
+variable      dumpfreq equal 10
+variable      logfreq equal 100
+
+variable      skin equal ${diam}
+neighbor      ${skin} bin
+
+comm_modify	  vel yes cutoff ${diam}
+
+thermo_style	custom step cpu atoms ke lx
+thermo_modify	flush yes lost warn
+thermo        ${logfreq}
+
+run  0
+
+dump 1        all custom ${dumpfreq} ../data/DUMP/normal_rad.dump id type x y z v_R
+
+run	 50000

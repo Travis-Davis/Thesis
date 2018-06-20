@@ -5,32 +5,40 @@ clc
 platform = 'mb';
 input    = '3D_peri';
 
+tol = 1e-5;
+
 rho_w = 1017;
 rho_o = 900;
 
 R_o   = 1;
 
-cub = roots([rho_w*pi/3,rho_w*2*pi*R_o,-rho_w*pi*R_o^2,-rho_o*4/3*pi*R_o^3]);
+cub = roots([1,-3*R_o,0,4*(rho_w-rho_o)/rho_w*R_o^3]);
 for i = 1:3
-    if cub(i) < 0
-        z_eq_ref = cub(i) - R_o;
+    if cub(i) == abs(cub(i))
+        if cub(i) < R_o && cub(i) > 0
+            z_eq_ref = cub(i)-R_o;
+        end
     end
 end
 
-lim    = .25;
-dist   = linspace(-lim,lim,21);
+lim = 2;
+dist = linspace(-lim,lim,11);
 z_test = (dist+1).*z_eq_ref;
 system('rm *.log log.* ../data/DUMP/*.vtk ../data/DUMP/*.dump');
 
 %%
-for i = 1:length(z_test)
+variance = 1;
+z_eq = z_eq_ref;
+z_eq_trend = z_eq_ref;
+
+while variance > tol
     system('rm in.include.equilibrium in.trial *.log log.* ../data/DUMP/*.vtk ../data/DUMP/*.dump');
     
     fileID = fopen('in.include.equilibrium','w');
-    fprintf(fileID,sprintf('create_atoms  1 single 0 0 %0.32f\n',z_test(i)));
+    fprintf(fileID,sprintf('create_atoms  1 single 0 0 %0.32f\n',z_eq));
     
     fileID = fopen('in.trial','w')
-    fprintf(fileID,sprintf('variable diam equal %0.32f\n',2*R_o));
+    fprintf(fileID,sprintf('variable diam equal %f\n',2*R_o));
     fprintf(fileID,sprintf('variable rad equal ${diam}*0.5\n'));
     
     system(strcat('../lmp_mpi_',platform,' -in in.',input));
@@ -65,19 +73,16 @@ for i = 1:length(z_test)
         j = j+1;
     end
     
-    final(2*i-1,:) = time';
-    final(2*i,:) = data(:,5)' + R_o;
+    final(1,:) = time';
+    final(2,:) = data(:,5)';
+    variance = var(data(:,5)');
+    
+    del  = final(2,2)-final(2,1);
+    z_eq = z_eq+del;
+    z_eq_trend(end+1) = z_eq;
 end
 
 %%
 figure
 box on
-for i = 1:length(z_test)
-    hold on
-    if i == floor(length(z_test)/2)+1
-        plot(final(2*i-1,:)*2e-4,final(2*i,:),'LineWidth',2)
-    else
-        plot(final(2*i-1,:)*2e-4,final(2*i,:))
-    end
-end
-    
+plot(final(1,:),final(2,:),'k')
