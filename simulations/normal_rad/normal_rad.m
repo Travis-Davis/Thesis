@@ -11,36 +11,55 @@ platform = 'mb';
 input    = 'normal_rad';
 %% Constants:
 % Simulation Box:
-x_lo = -100;
-x_hi = 100;
-y_lo = -100;
-y_hi = 100;
-z_lo = -100;
-z_hi = 100;
+x_lo = 0;
+x_hi = 50;
+y_lo = 0;
+y_hi = 50;
+z_lo = -20;
+z_hi = 20;
+xc   = (x_hi+x_lo)/2;
 
-R_o   = 1;                          % Mean Radius of particles.
-sig_r = .01;                         % Standard Deviation of Particles.
+x_hi_1 = 0.95*xc;
+x_lo_2 = 1.05*xc;
+
+% R_o =  Mean Radius of particles; sig_r = Standard Deviation of Particles.
+R_o   = .5;
+sig_r = .001;
 
 % Physical:
+% rho_o = Density of particles; rho_w = Density of sea-water.
+% rho_a = Density of air.
 rho_o = 900;                        % Density of particles.
 rho_w = 1017;                       % Density of sea-water.
 rho_a = 1;                          % Density of air.
-g     = 9.81;                       % Gravitational acceleration.
 
-Cdo   = 10;                         % Ocean Drag Coefficient.
-Cdw   = 10;                          % Water Drag Coefficient.
+% g = Gravity.
+g     = 9.81;
 
-K     = 2e5;                        % Bulk Modulus.
-s00   = 1e9;                        % Bond Break criteria.
-alpha = 25;                         % Bond Break criteria.
+% Cdo = Ocean drag coefficient; Cda = Air drag coefficient. 
+Cdo   = 10;
+Cda   = 10;
+
+% K = Bulk Modulus; s00 = Bond Criteria; alpha = Bond Criteria.
+K     = 2e6;
+s00   = 1e9;
+alpha = .1;
 
 % Computed Values:
 hor = 2*R_o;
 c   = (18*K)/(4*hor^4);
 
-n_x = floor((x_hi - x_lo)/(2*R_o)); % Number of Elements in x to fill sim.
-n_y = floor((y_hi - y_lo)/(2*R_o)); % Number of Elements in y to fill sim.
-N   = n_x*n_y;                      % Total Number of Elements.
+% Floe 1: 
+n_x_1 = ceil((x_hi_1-x_lo)/(2*R_o));
+n_y_1 = ceil((y_hi - y_lo)/(2*R_o));
+N_1   = n_x_1*n_y_1;                  % Total Number of Elements in Floe 1.
+
+% Floe 2: 
+n_x_2 = ceil((x_hi-x_lo_2)/(2*R_o));
+n_y_2 = ceil((y_hi - y_lo)/(2*R_o));
+N_2   = n_x_2*n_y_2;                  % Total Number of Elements in Floe 2.
+
+N = N_1+N_2;
 
 R   = normrnd(R_o,sig_r,1,N);       % Normal Radius distribution.
 V   = 4/3*pi*R.^3;                  % Volume of each element.
@@ -74,12 +93,12 @@ fprintf(fileID,sprintf('variable airDensity equal %0.32f\n',rho_a));
 fprintf(fileID,sprintf('variable gravity equal %0.32f\n',g));
 
 fprintf(fileID,sprintf('variable Cdo equal %0.32f\n',Cdo));
-fprintf(fileID,sprintf('variable Cdw equal %0.32f\n',Cdw));
+fprintf(fileID,sprintf('variable Cda equal %0.32f\n',Cda));
 
 % Create the Simulation Domain:
 fileID = fopen('simbox.include','w');
 
-fprintf(fileID,'boundary    f f f\n');
+fprintf(fileID,'boundary f f f\n');
 fprintf(fileID,'atom_modify map array\n');
 fprintf(fileID,sprintf('variable x0 equal %0.32f\n',x_lo));
 fprintf(fileID,sprintf('variable x1 equal %0.32f\n',x_hi));
@@ -93,21 +112,23 @@ fprintf(fileID,'create_box 1 boxreg');
 
 % Particle initialization:
 fileID = fopen('atom.include','w');
-k = 1;
-for i = 1:n_x
-    for j = 1:n_y
-        fprintf(fileID,sprintf('create_atoms 1 single %0.32f %0.32f %0.32f\n',...
-            x_lo+(i-1)*2*R_o,y_lo+(j-1)*2*R_o,z_bot(k)));
-        fprintf(fileID,sprintf('set atom %g volume %0.32f\n',...
-            k,V(k)));
-        fprintf(fileID,sprintf('set atom %g mass %0.32f\n',...
-            k,M(k)));
-        k = k+1;
-    end
-end
-fprintf(fileID,sprintf('variable diam equal %0.32f\n',min(R)));
 
-% Forcing initialization:
+fprintf(fileID,sprintf('lattice sc %0.32f\n',2*R_o));
+fprintf(fileID,sprintf('region slab1 block %0.32f %0.32f ${y0} ${y1} %0.32f %0.32f units box\n',...
+                        x_lo,x_hi_1,min(z_bot),0));
+fprintf(fileID,sprintf('region slab2 block %0.32f %0.32f ${y0} ${y1} %0.32f %0.32f units box\n',...
+                        x_lo_2,x_hi,min(z_bot),0));
+fprintf(fileID,'create_atoms 1 region slab1\n');
+fprintf(fileID,'create_atoms 1 region slab2\n');
+
+for i = 1:N
+    fprintf(fileID,sprintf('set atom %g volume %0.32f\n',...
+        i,V(i)));
+    fprintf(fileID,sprintf('set atom %g mass %0.32f\n',...
+        i,M(i)));
+end
+
+fprintf(fileID,sprintf('variable diam equal %0.32f\n',2*min(R)));
 
 %% Run the Simulation:
 sys = strcat({'../lmp_mpi_'},platform,{' -in '},input,{'.in'});

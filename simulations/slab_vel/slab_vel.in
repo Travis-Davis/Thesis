@@ -1,0 +1,104 @@
+###############################################
+# General settings
+###############################################
+
+log         slab_vel.log
+atom_style  peri
+units       si
+
+###############################################
+# Physical Constants
+###############################################
+
+include constant.include
+
+###############################################
+# Geometry-related parameters
+###############################################
+
+include simbox.include
+
+###############################################
+# Create atoms
+###############################################
+
+include atom.include
+
+###############################################
+# Computes and Property/atom variables
+###############################################
+
+variable    velocity atom sqrt(vx*vx+vy*vy+vz*vz)
+variable    R        atom (3/4*mass/(${dens}*PI))^(1/3)
+variable    vol      atom mass/${dens}
+variable    area     atom PI*(v_R)^2
+
+###############################################
+# Force Calculations - vertical
+###############################################
+
+# Buoyancy calculation (need displaced volume):
+variable h     atom (z<-v_R)*(2*v_R+z)+(z>=v_R)*(v_R+z)
+variable Vwed  atom 1/3*PI*v_h^2*(3*v_R-v_h)
+
+variable V1    atom (z<-v_R)*(z>=-2*v_R)*(v_vol-v_Vwed)
+variable V2    atom (z<0)*(z>=-v_R)*(v_Vwed)
+variable V3    atom (z<-2*v_R)*v_vol
+
+variable Vdisp atom v_V1+v_V2+v_V3
+
+# Non-Contact Forces (not handled through pair style): Buoyancy, Gravity, Drag
+variable Fb    atom ${waterDensity}*${gravity}*v_Vdisp
+variable Fg    atom ${gravity}*mass
+variable Fdz   atom (z<v_R)*((vz<=0)-(vz>0))*(1/2*${Cdo}*${waterDensity}*v_area*vz^2)
+variable Fztot atom v_Fb-v_Fg+v_Fdz
+
+###############################################
+# Force Calculations - horizontal
+###############################################
+
+variable Fdx   atom (z<v_R)*((vx<=0)-(vx>0))*(1/2*${Cdo}*${waterDensity}*v_area*vx^2)
+variable Fxtot atom v_Fdx
+
+variable Fdy   atom (z<v_R)*((vy<=0)-(vy>0))*(1/2*${Cdo}*${waterDensity}*v_area*vy^2)
+variable Fytot atom v_Fdx
+
+###############################################
+# Fixes and pair styles
+###############################################
+
+comm_style    tiled
+timestep      0.0005
+
+pair_style    peri/pmb
+pair_coeff    * * ${c} ${hor} ${s00} ${alpha}
+
+fix           1 all    nve
+fix           2 all    addforce v_Fxtot v_Fytot v_Fztot
+fix           3 all    wall/reflect xhi EDGE xlo EDGE
+
+###############################################
+# Run settings
+###############################################
+
+variable      dumpfreq equal 10
+variable      logfreq equal 100
+
+variable      skin equal ${diam}
+neighbor      ${skin} bin
+
+comm_modify	  vel yes cutoff ${diam}
+
+thermo_style	custom step cpu atoms ke lx
+thermo_modify	flush yes lost warn
+thermo          ${logfreq}
+
+run  0
+
+dump 1        all custom ${dumpfreq} ../data/DUMP/slab_vel.dump id type x y z v_R
+
+run	 1000
+
+include velocity.include
+
+run  30000
