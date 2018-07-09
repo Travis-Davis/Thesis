@@ -20,9 +20,9 @@ v_o   = 1.5;
 pad  = 5;
 
 x_lo = 0;
-x_hi = 500;
+x_hi = 30;
 y_lo = 0;
-y_hi = 100;
+y_hi = 30;
 z_lo = -20;
 z_hi = 20;
 xc   = (x_hi+x_lo)/2;

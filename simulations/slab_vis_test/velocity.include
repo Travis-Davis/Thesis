@@ -1,0 +1,3 @@
+variable vo equal 2.00000000000000000000000000000000
+velocity 1 set ${vo} NULL NULL
+velocity 2 set -${vo} NULL NULL
