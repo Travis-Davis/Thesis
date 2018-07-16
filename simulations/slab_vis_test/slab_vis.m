@@ -6,29 +6,29 @@ clear all
 clc
 system('rm atom.include *.log log.* ../data/DUMP/*.vtk ../data/DUMP/*.dump');
 %%
-platform = 'mb';
+platform = 'im';
 input    = 'slab_vis';
 %% Constants:
 % R_o =  Mean Radius of particles; rho_o = Density of Particles;
 % sig_r = standard deviation; v_o =  Initial Velocity of slab.
-R_o   = .25;
-rho_o = 900;
+R_o   = .30;
+rho_o = 850;
 sig_r = 0.1;
-v_o   = 2;
+v_o   = 3;
 
 % Simulation Box:
 pad  = 10;
 
 x_lo = 0;
-x_hi = 140;
+x_hi = 60;
 y_lo = 0;
-y_hi = 40;
+y_hi = 30;
 z_lo = -20;
 z_hi = 20;
 xc   = (x_hi+x_lo)/2;
 
 h1   = 1;
-h2   = 1.5;
+h2   = 2;
 
 x_hi_1 = xc - 3*R_o;
 x_lo_2 = xc + 3*R_o;
@@ -42,16 +42,16 @@ rho_a = 1;
 g     = 9.81;
 
 % Cdo = Ocean drag coefficient; Cda = Air drag coefficient. 
-Cdo   = 0;
+Cdo   = 10;
 Cda   = 0;
 
 % K = Bulk Modulus; s00 = Bond Criteria; alpha = Bond Criteria.
-K     = 75000;
-s00   = .004;
-alpha = 0.9;
+K     = 5.81e9;
+s00   = 4.36e-6;
+alpha = 0;
 
 % Computed Values:
-hor   = 6*R_o;
+hor   = 5.01;
 c     = (18*K)/(4*hor^4);
 
 % Floe 1:

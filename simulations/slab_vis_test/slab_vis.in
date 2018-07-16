@@ -70,7 +70,7 @@ variable Fytot atom v_Fdx
 ###############################################
 
 comm_style    tiled
-timestep      0.0005
+timestep      0.000001
 
 pair_style    peri/pmb
 pair_coeff    * * ${c} ${hor} ${s00} ${alpha}
@@ -83,8 +83,8 @@ fix           3 all    wall/reflect xhi EDGE xlo EDGE yhi EDGE ylo EDGE
 # Run settings
 ###############################################
 
-variable      dumpfreq equal 200
-variable      logfreq equal 100
+variable      dumpfreq equal 1000
+variable      logfreq equal 1000
 
 variable      skin equal ${diam}
 neighbor      ${skin} bin
@@ -99,8 +99,8 @@ run  0
 
 dump 1        all custom ${dumpfreq} ../data/DUMP/slab_vis.dump id x y z v_denst c_1
 
-run	 5000
+run	 100000
 
 include velocity.include
 
-run  15000
+run  100000
